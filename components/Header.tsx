@@ -1,17 +1,18 @@
 'use client'
 import Image from 'next/image'
-import Link from 'next/link'
+import * as am from '@/components/Animation'
 
 export default function Header() {
     return (
-        <div className="flex justify-between items-center z-100 h-80 w-full bg-whit">
-            <a href="/" className="flex items-center gap-10 text-black">
-                <Image src="/logo.png" alt="logo" width={40} height={40} />
-                <span>KanikanLab</span>
+        <div className="flex justify-between items-center z-100 w-full bg-white px-20 py-6 font-['krok'] text-2xl">
+            <a href="/" className="flex items-center gap-5 text-black">
+                <Image src="/logo.svg" alt="logo" width={30} height={30} />
+                <span >KanikanLab</span>
             </a>
-            <div className="flex items-center gap-10 text-black">
-                <a href="/about">About</a>
-                <a href="/blog">Blog</a>
+            <div className="flex items-center gap-20 text-black">
+                <a href="/about" className="relative animate-text-underline"><am.HoverText>About</am.HoverText></a>
+                <a href="/blog"><am.HoverText>Blog</am.HoverText></a>
+                <button></button>
             </div>
         </div>
     )
