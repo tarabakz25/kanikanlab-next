@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { TypekitLoader } from "@/components/TypekitLoader";
 import "./globals.css";
 
+import Head from "next/head";
+
 
 
 export const metadata: Metadata = {
