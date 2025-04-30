@@ -15,12 +15,15 @@ export default function ArcticleContainer(
         <div>
             {blogs.map((blog) => {
                 return (
-                    <div>
+                    <a href={`/blog/posts/${blog.id}`} key={blog.id}>
                         <div>
                             <div>
-                                {blog.categories.map((cat, idx) => (
-                                    <span key={idx}>{cat.category}</span>
-                                ))}
+                                {Array.isArray(blog.categories) 
+                                    ? blog.categories.map((cat, idx) => (
+                                        <span key={idx}>{cat.category}</span>
+                                    ))
+                                    : blog.categories && <span>{blog.categories.category}</span>
+                                }
                             </div>
                             <Image src={blog.heroImage.url} alt="HEROIMAGE" width={300} height={600} />
                         </div>
@@ -28,7 +31,7 @@ export default function ArcticleContainer(
                             <p>{blog.title}</p>
                             <p>{blog.publishedAt}</p>
                         </div>
-                    </div>
+                    </a>
                 )
             })}
         </div>
