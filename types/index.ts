@@ -11,8 +11,5 @@ export type Blog = {
     categories: {
         id?: string
         category: string
-    } | {
-        id?: string
-        category: string
     }[]
 }

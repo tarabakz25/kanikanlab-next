@@ -2,10 +2,10 @@ import Image from 'next/image'
 
 export default function Sidebar() {
     return (
-        <div className="w-full mb-2">
-            <div className="bg-white rounded-2xl p-1">
-                <Image src="/logo.svg" alt="logo" width={30} height={30} />
-                <p>Kizuki</p>
+        <div className="w-full mb-2 flex flex-col items-center">
+            <div className="bg-white rounded-2xl p-1 flex flex-col items-center gap-2">
+                <Image src="/WriterIcon.png" alt="logo" width={500} height={500} className="rounded-full w-20 h-auto" />
+                <p className="text-2xl font-bold">Kizuki</p>
                 <p>
                     神山まるごと高専一期生。 東京→徳島
                     旅行、生成AI、テクノロジーを追って日々精進中。
