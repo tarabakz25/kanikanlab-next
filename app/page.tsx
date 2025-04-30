@@ -26,8 +26,10 @@ export default function Home() {
   return (
     <div>
       <Header />
-      <Sidebar />
-      <ArcticleContainer blogs={blogs} />
+      <div className="flex">
+        <Sidebar />
+        <ArcticleContainer blogs={blogs} />
+      </div>
       <Footer />
     </div>
   )

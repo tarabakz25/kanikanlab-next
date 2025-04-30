@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TypekitLoader } from "@/components/TypekitLoader";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 import Head from "next/head";
@@ -19,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="antialiased">
-        <TypekitLoader />
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system">
+          <TypekitLoader />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
