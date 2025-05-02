@@ -21,7 +21,7 @@ async function getBlogPost(id: string): Promise<Props | null> {
   }
 }
 
-export default async function BlogPost({ params }: { params: { id: string } }) {
+export default async function ArticleDetail({ params }: { params: { id: string } }) {
     try {
         const blog = await getBlogPost(params.id)
         
@@ -30,7 +30,7 @@ export default async function BlogPost({ params }: { params: { id: string } }) {
         }
 
         return (
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4">
                 {blog.blog.heroImage && (
                   <div className="mb-8">
                     <Image 
@@ -38,7 +38,7 @@ export default async function BlogPost({ params }: { params: { id: string } }) {
                       alt={blog.blog.title} 
                       width={1200} 
                       height={630} 
-                      className="w-full h-auto rounded-lg"
+                      className="rounded-lg h-128 w-full object-cover"
                     />
                   </div>
                 )}
