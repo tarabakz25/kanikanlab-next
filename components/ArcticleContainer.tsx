@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next"
 import Image from "next/image"
+import Link from "next/link"
 
 import { client } from "@/lib/microClient"
 import { Blog } from "@/types"
@@ -13,12 +14,12 @@ export default function ArcticleContainer(
     { blogs }: Props
 ) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-auto">
             {blogs.map((blog) => {
                 return (
-                    <a href={`/blog/posts/${blog.id}`} key={blog.id} className="flex flex-col min-w-96 bg-white rounded-lg overflow-hidden shadow-md transition transform mb-2 hover:shadow-xl hover:transform-y-[-5px]">
+                    <Link href={`/blog/posts/${blog.id}`} key={blog.id} className="flex flex-col bg-white rounded-lg overflow-hidden shadow-md transition transform mb-2 hover:shadow-xl hover:-translate-y-1">
                         <div className="relative">
-                            <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
+                            <div className="absolute top-2 left-2 flex flex-wrap gap-1.5 z-10">
                                 {Array.isArray(blog.categories) 
                                     ? blog.categories.map((cat, idx: number) => (
                                         <Tag tag={cat.category} key={idx} />
@@ -26,13 +27,13 @@ export default function ArcticleContainer(
                                     : <Tag tag={(blog.categories as {category: string}).category} key="single" />
                                 }
                             </div>
-                            <Image src={blog.heroImage.url} alt="HEROIMAGE" width={1000} height={1000} className="w-full h-auto object-cover" />
+                            <Image src={blog.heroImage.url} alt={blog.title} width={1000} height={1000} className="w-full h-auto object-cover" />
                         </div>
                         <div className="p-1.5 text-left flex flex-col">
-                            <p className="text-lg font-bold m-3">{blog.title}</p>
-                            <p className="ml-3">{new Date(blog.publishedAt).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-')}</p>
+                            <h2 className="text-lg font-bold m-3 line-clamp-2">{blog.title}</h2>
+                            <p className="ml-3 text-gray-500">{new Date(blog.publishedAt).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-')}</p>
                         </div>
-                    </a>
+                    </Link>
                 )
             })}
         </div>
@@ -41,7 +42,7 @@ export default function ArcticleContainer(
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
     const data = await client.getList<Blog>({
-        endpoint: "blog",
+        endpoint: "blogs",
         queries: {
             limit: 10,
         },
