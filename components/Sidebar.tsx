@@ -42,7 +42,7 @@ export default function Sidebar(
                                     </li>
                                 ))
                                 : <li key={`single-${blogIndex}`}>
-                                    <a href={`/blog/categories/${(blog.categories as { category: string }).category}`} className="block decoration-none relative pl-3">
+                                    <a href={`/blog/categories/${(blog.categories as { category: string }).category}`} className="block decoration-none relative pl-3 text-underline">
                                         <FaTag className="absolute top-1.5 left-[-0.5rem]" />
                                         {(blog.categories as { category: string }).category}
                                     </a>

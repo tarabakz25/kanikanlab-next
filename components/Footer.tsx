@@ -1,7 +1,7 @@
 
 export default function Footer() {
     return (
-        <div className="flex justify-between items-center border-t-1 border-gray-300 py-10 px-20">
+        <div className="flex justify-between items-center border-t border-gray-300 py-10 px-20">
             <div>
                 <h2 className="font-['krok'] text-center"><span className="font-['anonymous-pro'] font-bold">@2025</span> KanikanLab</h2>
             </div>

@@ -24,7 +24,7 @@ const config: Config = {
             },
         },
         fontFamily: {
-            sans: ['krok', 'source-han-sans-cjk-ja', 'sans-serif'],
+            sans: ['krok', 'source-han-sans-cjk-ja', 'fot-tsukuardgothic-std', 'sans-serif'],
             mono: ['anonymous-pro', 'monospace'],
         },
     }

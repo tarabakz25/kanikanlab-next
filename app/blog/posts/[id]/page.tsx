@@ -33,16 +33,16 @@ export default async function BlogPost({ params }: { params: { id: string } }) {
     return (
         <>
             <Header />
-            <div className="container mx-auto pl-50 mt-18 mb-5">
-                <Breadcumbs items={[
-                    { label: 'ホーム', href: '/' }, 
-                    { label: 'ブログ', href: '/blog' }, 
-                    { label: `${currentBlog.title}`, href: `/blog/posts/${resolvedParams.id}` }
-                ]} />
-            </div>
-            <div className="flex ml-32 mr-32 gap-10 mb-20">
+            <div className="flex ml-32 mr-32 gap-10 mb-20 mt-20">
                 <LikeAndShare />
-                <ArticleDetail params={resolvedParams} />
+                <div>
+                    <Breadcumbs items={[
+                        { label: 'ホーム', href: '/' }, 
+                        { label: 'ブログ', href: '/blog' }, 
+                        { label: `${currentBlog.title}`, href: `/blog/posts/${resolvedParams.id}` }
+                    ]} className="pl-5 mb-5" />
+                    <ArticleDetail params={resolvedParams} />
+                </div>
                 <Sidebar blogs={blogList.contents} />
             </div>
             <Footer />
