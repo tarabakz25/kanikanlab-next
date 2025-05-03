@@ -1,20 +1,20 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode } from "react";
 
 interface HoverTextProps {
-    children: ReactNode;
-    className?: string;
-  }
-  
+  children: ReactNode;
+  className?: string;
+}
+
 export const HoverText: React.FC<HoverTextProps> = ({
-    children,
-    className = '',
-    }) => {
-    return (
-        <span className={`relative inline-block group ${className}`}>
-        {children}
-        <span 
-            className={`absolute left-0 bg-black dark:bg-white w-full h-0 bottom-[-10px] group-hover:h-0.5 duration-300 transition-all ease-in-out`}
-        />
-        </span>
-    );
+  children,
+  className = "",
+}) => {
+  return (
+    <span className={`group relative inline-block ${className}`}>
+      {children}
+      <span
+        className={`absolute bottom-[-10px] left-0 h-0 w-full bg-black transition-all duration-300 ease-in-out group-hover:h-0.5 dark:bg-white`}
+      />
+    </span>
+  );
 };

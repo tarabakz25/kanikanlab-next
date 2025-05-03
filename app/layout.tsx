@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body className="antialiased font-[fot-tsukuardgothic-std] mt-10">
+      <body className="font-[fot-tsukuardgothic-std] antialiased">
         <ThemeProvider attribute="class" defaultTheme="system">
           <TypekitLoader />
           {children}

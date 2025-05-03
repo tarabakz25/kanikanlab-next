@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
 export default function TopContainer() {
-    return (
-        <div className="flex justify-center items-center h-200 font-['krok']">
-            <p className="text-4xl mx-8">Hello KanikanLab!!!</p>
-        </div>
-    )
+  return (
+    <div className="flex h-200 items-center justify-center font-['krok']">
+      <p className="mx-8 text-4xl">Hello KanikanLab!!!</p>
+    </div>
+  );
 }

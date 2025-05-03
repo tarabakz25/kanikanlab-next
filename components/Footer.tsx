@@ -1,15 +1,17 @@
-
 export default function Footer() {
-    return (
-        <div className="flex justify-between items-center border-t border-gray-300 py-10 px-20">
-            <div>
-                <h2 className="font-['krok'] text-center"><span className="font-['anonymous-pro'] font-bold">@2025</span> KanikanLab</h2>
-            </div>
-            <div className="flex justify-center items-center">
-                <a href="/privacy-policy">プライバシーポリシー</a>
-                <span className="inline-block w-0.5 h-4 bg-gray-300 mx-5"></span>
-                <a href="/disclaimer">免責事項</a>
-            </div>
-        </div>
-    )
+  return (
+    <div className="flex items-center justify-between border-t border-gray-300 px-20 py-10">
+      <div>
+        <h2 className="text-center font-['krok']">
+          <span className="font-['anonymous-pro'] font-bold">@2025</span>{" "}
+          KanikanLab
+        </h2>
+      </div>
+      <div className="flex items-center justify-center">
+        <a href="/privacy-policy">プライバシーポリシー</a>
+        <span className="mx-5 inline-block h-4 w-0.5 bg-gray-300"></span>
+        <a href="/disclaimer">免責事項</a>
+      </div>
+    </div>
+  );
 }
