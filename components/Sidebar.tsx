@@ -10,7 +10,7 @@ type Props = {
 export default function Sidebar({ blogs }: Props) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex w-72 flex-col items-center gap-2 rounded-lg bg-white p-4 shadow-md">
+      <div className="flex w-72 flex-col items-center gap-2 rounded-lg p-4 shadow-md">
         <Image
           src="/WriterIcon.png"
           alt="logo"

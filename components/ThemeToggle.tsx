@@ -1,17 +1,32 @@
 "use client";
 import { FaRegMoon, FaRegSun } from "react-icons/fa";
 import { useTheme } from "next-themes";
-
+import { useState, useEffect } from "react";
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const { setTheme, resolvedTheme } = useTheme();
 
-  return (
-    <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-      {theme === "dark" ? (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  if (resolvedTheme === "dark") {
+    return (
+      <button onClick={() => setTheme("light")}>
         <FaRegSun className="pt-1 text-2xl transition-all" />
-      ) : (
-        <FaRegMoon className="pt-1 text-2xl" />
-      )}
-    </button>
-  );
+      </button>
+    );
+  }
+
+  if (resolvedTheme === "light") {
+    return (
+      <button onClick={() => setTheme("dark")}>
+        <FaRegMoon className="pt-1 text-2xl transition-all" />
+      </button>
+    );
+  }
 }

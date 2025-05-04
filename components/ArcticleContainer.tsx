@@ -18,7 +18,7 @@ export default function ArcticleContainer({ blogs }: Props) {
           <Link
             href={`/blog/posts/${blog.id}`}
             key={blog.id}
-            className="mb-2 flex transform flex-col overflow-hidden rounded-lg bg-white shadow-md transition hover:-translate-y-1 hover:shadow-xl"
+            className="mb-2 flex transform flex-col overflow-hidden rounded-lg shadow-md transition hover:-translate-y-1 hover:shadow-xl"
           >
             <div className="relative">
               <div className="absolute top-2 left-2 z-10 flex flex-wrap gap-1.5">
@@ -42,10 +42,10 @@ export default function ArcticleContainer({ blogs }: Props) {
               />
             </div>
             <div className="flex flex-col p-1.5 text-left">
-              <h2 className="m-3 line-clamp-2 text-lg font-bold">
+              <h2 className="m-3 line-clamp-2 text-lg font-bold text-color">
                 {blog.title}
               </h2>
-              <p className="ml-3 text-gray-500">
+              <p className="ml-3 text-gray-500 dark:text-gray-400">
                 {new Date(blog.publishedAt)
                   .toLocaleDateString("ja-JP", {
                     year: "numeric",
