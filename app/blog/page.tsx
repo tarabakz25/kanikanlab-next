@@ -3,11 +3,8 @@ import { useState, useEffect } from "react";
 import { Blog } from "@/types";
 import { client } from "@/lib/microClient";
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import ArcticleContainer from "@/components/ArcticleContainer";
-import Breadcumbs from "@/components/Breadcumbs";
 import Loading from "@/components/Loading";
 
 export default function BlogsPage() {

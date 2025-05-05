@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { TypekitLoader } from "@/components/TypekitLoader";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Script from "next/script";
 
 import "./globals.css";
 import "zenn-content-css";
@@ -25,7 +26,7 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <script src="https://embed.zenn.studio/js/listen-embed-event.js"></script>
+        <Script src="https://embed.zenn.studio/js/listen-embed-event.js" />
       </head>
       <body className="bg-white font-[fot-tsukuardgothic-std] text-black antialiased dark:bg-black dark:text-white">
         <ThemeProvider>

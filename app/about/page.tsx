@@ -60,8 +60,12 @@ export default function About() {
           <h3>Languages</h3>
           <div className="flex gap-10">
             {skills.languages.map((language) => (
-              <img
-                src={`https://skillicons.dev/icons?i=${language}&theme=dark`}
+              <Image
+                key={language}
+                src={`https://skillicons.dev/icons?i=${language}`}
+                alt={`${language} icon`}
+                width={50}
+                height={50}
               />
             ))}
           </div>
@@ -70,8 +74,12 @@ export default function About() {
           <h3>Frameworks</h3>
           <div className="flex gap-10">
             {skills.frameworks.map((framework) => (
-              <img
-                src={`https://skillicons.dev/icons?i=${framework}&theme=dark`}
+              <Image
+                key={framework}
+                src={`https://skillicons.dev/icons?i=${framework}`}
+                alt={`${framework} icon`}
+                width={50}
+                height={50}
               />
             ))}
           </div>
@@ -80,7 +88,13 @@ export default function About() {
           <h3>Tools</h3>
           <div className="flex gap-10">
             {skills.tools.map((tool) => (
-              <img src={`https://skillicons.dev/icons?i=${tool}&theme=dark`} />
+              <Image
+                key={tool}
+                src={`https://skillicons.dev/icons?i=${tool}`}
+                alt={`${tool} icon`}
+                width={50}
+                height={50}
+              />
             ))}
           </div>
         </div>
@@ -89,7 +103,7 @@ export default function About() {
         <h1 className="font-[krok] text-5xl tracking-wider">History</h1>
         <div className="flex flex-col items-start gap-5">
           {Object.entries(histories).map(([date, history]) => (
-            <div className="flex flex-col items-start gap-1">
+            <div key={date} className="flex flex-col items-start gap-1">
               <p className="text-sm">{date}</p>
               <p className="text-2xl">{history}</p>
             </div>

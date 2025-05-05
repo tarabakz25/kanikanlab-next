@@ -1,14 +1,14 @@
 import { Blog } from "@/types";
 import ArticleDetail from "@/components/ArticleDetail";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import Breadcumbs from "@/components/Breadcumbs";
 import { client } from "@/lib/microClient";
 import { notFound } from "next/navigation";
 import LikeAndShare from "@/components/LikeAndShare";
 
-export default async function BlogPost({ params }: { params: { id: string } }) {
+type PostParams = Promise<{ id: string }>;
+
+export default async function BlogPost({ params }: { params: PostParams }) {
   // paramsを非同期で解決
   const resolvedParams = await params;
 

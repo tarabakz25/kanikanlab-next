@@ -4,15 +4,14 @@ import { notFound } from "next/navigation";
 import { client } from "@/lib/microClient";
 import { Blog } from "@/types";
 
-import markdownToHtml from 'zenn-markdown-html';
-
 // サーバーサイドでzenn-markdown-htmlを使用するためのユーティリティ関数
 async function convertMarkdownToHtml(markdown: string): Promise<string> {
   try {
     // 動的インポートでモジュールを読み込む
     const mod = await import('zenn-markdown-html');
     // defaultエクスポートを使用
-    const html = (mod.default as any)(markdown, {
+    const markdownConverter = mod.default as unknown as (markdown: string, options?: { embedOrigin?: string }) => string;
+    const html = markdownConverter(markdown, {
       embedOrigin: "https://embed.zenn.studio"
     });
     return html;
@@ -95,7 +94,7 @@ export async function generateStaticParams() {
       endpoint: "blogs",
     });
 
-    return response.contents.map((post: any) => ({
+    return response.contents.map((post: Blog) => ({
       id: post.id,
     }));
   } catch (error) {

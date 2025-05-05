@@ -1,18 +1,19 @@
 import { Blog } from "@/types";
 import { client } from "@/lib/microClient";
 import { notFound } from "next/navigation";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import ArcticleContainer from "@/components/ArcticleContainer";
 import Breadcumbs from "@/components/Breadcumbs";
 
+type CategoryParams = Promise<{ tag: string }>;
+
 export default async function CategoryPage({
   params,
 }: {
-  params: { tag: string };
+  params: CategoryParams;
 }) {
-  const category = decodeURIComponent(params.tag);
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.tag);
 
   // カテゴリーに属する記事を取得
   let blogs;
@@ -44,7 +45,7 @@ export default async function CategoryPage({
             { label: "ホーム", href: "/" },
             { label: "ブログ", href: "/blog" },
             { label: "カテゴリー一覧", href: "" },
-            { label: category, href: `/blog/categories/${params.tag}` },
+            { label: category, href: `/blog/categories/${resolvedParams.tag}` },
           ]}
           className="mb-5"
         />
