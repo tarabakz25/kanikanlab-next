@@ -20,6 +20,24 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Supabase Setup
+
+This project uses Supabase for the "likes" functionality. To set it up:
+
+1. Create a Supabase account and project at [https://supabase.com](https://supabase.com)
+2. Create a new table called `likes` with the following schema:
+   - `id` (uuid, primary key)
+   - `post_id` (text, not null)
+   - `user_id` (text, not null)
+   - `created_at` (timestamp with time zone, default: now())
+3. Create a unique constraint on the combination of `post_id` and `user_id`
+4. Copy your Supabase URL and anon key from your project settings
+5. Create a `.env.local` file and add your Supabase credentials:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

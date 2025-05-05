@@ -33,7 +33,7 @@ export default async function BlogPost({ params }: { params: PostParams }) {
   return (
     <div>
       <div className="pt-50 mr-32 mb-20 ml-32 flex gap-10">
-        <LikeAndShare />
+        <LikeAndShare postId={resolvedParams.id} />
         <div>
           <Breadcumbs
             items={[

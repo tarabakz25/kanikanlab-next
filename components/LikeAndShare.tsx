@@ -1,15 +1,52 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FaShareFromSquare } from "react-icons/fa6";
-import { redirect } from "next/navigation";
-export default function LikeAndShare() {
+import { fetchLikeStatus, toggleLike } from "@/utils/likes";
+
+type LikeAndShareProps = {
+  postId: string;
+};
+
+export default function LikeAndShare({ postId }: LikeAndShareProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+  // コンポーネント読み込み時にいいね状態を取得
+  useEffect(() => {
+    const getLikeStatus = async () => {
+      try {
+        const { count, isLiked } = await fetchLikeStatus(postId);
+        setLikesCount(count);
+        setIsLiked(isLiked);
+      } catch (error) {
+        console.error("いいね状態の取得に失敗しました:", error);
+      }
+    };
+
+    getLikeStatus();
+  }, [postId]);
+
+  const handleLike = async () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    try {
+      const { count, isLiked } = await toggleLike(postId);
+      setLikesCount(count);
+      setIsLiked(isLiked);
+    } catch (error) {
+      console.error("いいね処理に失敗しました:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleShare = () => {
+    if (typeof window !== "undefined") {
+      window.open(`https://twitter.com/share?url=${window.location.href}`, "_blank");
+    }
   };
 
   return (
@@ -18,6 +55,7 @@ export default function LikeAndShare() {
         <button
           onClick={handleLike}
           className="rounded-full bg-gray-900 p-2.5 text-2xl"
+          disabled={isLoading}
         >
           {isLiked ? (
             <FaHeart className="transform text-red-500 transition-all hover:scale-110" />
@@ -28,9 +66,7 @@ export default function LikeAndShare() {
         <span className="text-sm font-bold">{likesCount}</span>
       </div>
       <button
-        onClick={() => {
-          redirect(`https://twitter.com/share?url=${window.location.href}`);
-        }}
+        onClick={handleShare}
         className="rounded-full bg-gray-900 p-2.5 text-2xl"
       >
         <FaShareFromSquare className="transform transition-all hover:scale-110 hover:text-blue-500" />
