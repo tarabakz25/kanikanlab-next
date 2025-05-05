@@ -24,21 +24,19 @@ export default function ArcticleContainer({ blogs }: Props) {
               <div className="absolute top-2 left-2 z-10 flex flex-wrap gap-1.5">
                 {Array.isArray(blog.categories) ? (
                   blog.categories.map((cat, idx: number) => (
-                    <Tag tag={cat.category} key={idx} />
+                    <Tag tag={cat} key={idx} />
                   ))
                 ) : (
-                  <Tag
-                    tag={(blog.categories as { category: string }).category}
-                    key="single"
-                  />
+                  <Tag tag={blog.categories[0]} key="single" />
                 )}
               </div>
               <Image
-                src={blog.heroImage.url}
+                src={blog.heroImage?.url || ""}
                 alt={blog.title}
                 width={1000}
                 height={1000}
-                className="h-auto w-full object-cover"
+                className="h-72 w-128 object-cover"
+                priority
               />
             </div>
             <div className="flex flex-col p-1.5 text-left">

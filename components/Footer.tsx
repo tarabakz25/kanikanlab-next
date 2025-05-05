@@ -1,3 +1,5 @@
+import { HoverTextBreadcumbs } from "./Animation";
+
 export default function Footer() {
   return (
     <div className="flex items-center justify-between border-t dark:bg-gray-900 border-gray-300 px-20 py-10">
@@ -8,9 +10,13 @@ export default function Footer() {
         </h2>
       </div>
       <div className="flex items-center justify-center">
-        <a href="/privacy-policy">プライバシーポリシー</a>
+        <HoverTextBreadcumbs>
+          <a href="/privacy-policy">プライバシーポリシー</a>
+        </HoverTextBreadcumbs>
         <span className="mx-5 inline-block h-4 w-0.5 bg-gray-300"></span>
-        <a href="/disclaimer">免責事項</a>
+        <HoverTextBreadcumbs>
+          <a href="/disclaimer">免責事項</a>
+        </HoverTextBreadcumbs>
       </div>
     </div>
   );

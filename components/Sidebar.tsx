@@ -9,11 +9,20 @@ type Props = {
 };
 
 export default function Sidebar({ blogs }: Props) {
+  // カテゴリーの重複を排除する
+  const uniqueCategories = Array.from(
+    new Set(
+      blogs.flatMap((blog) =>
+        Array.isArray(blog.categories) ? blog.categories : [blog.categories]
+      )
+    )
+  );
+
   return (
     <div className="flex flex-col gap-10 ">
       <div className="flex w-72 flex-col items-center gap-2 rounded-2xl p-4 shadow-md dark:bg-gray-900">
         <Image
-          src="/WriterIcon.png"
+          src="/about.png"
           alt="logo"
           width={500}
           height={500}
@@ -46,35 +55,19 @@ export default function Sidebar({ blogs }: Props) {
           Category
         </h3>
         <ul className="flex h-full list-none flex-col gap-5 text-left">
-          {blogs.map((blog, blogIndex) => {
-            return Array.isArray(blog.categories) ? (
-              blog.categories.map((cat, idx: number) => (
-                <li key={`${blogIndex}-${idx}`}>
-                  <HoverTextHeader>
-                    <a
-                      href={`/blog/categories/${cat.category}`}
-                      className="decoration-none relative block pl-3"
-                  >
-                      <FaTag className="absolute top-1.5 left-[-0.5rem]" />
-                      {cat.category}
-                    </a>
-                  </HoverTextHeader>
-                </li>
-              ))
-            ) : (
-              <li key={`single-${blogIndex}`}>
-                <HoverTextHeader>
-                  <a
-                    href={`/blog/categories/${(blog.categories as { category: string }).category}`}
-                  className="decoration-none text-underline relative block pl-3"
+          {uniqueCategories.map((category, index) => (
+            <li key={`category-${index}`}>
+              <HoverTextHeader>
+                <a
+                  href={`/blog/categories/${category}`}
+                  className="decoration-none relative block pl-3"
                 >
                   <FaTag className="absolute top-1.5 left-[-0.5rem]" />
-                    {(blog.categories as { category: string }).category}
-                  </a>
-                </HoverTextHeader>
-              </li>
-            );
-          })}
+                  {category}
+                </a>
+              </HoverTextHeader>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
