@@ -52,10 +52,9 @@ export const LikesService = {
 
   // いいねを追加
   async addLike(postId: string, userId: string) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('likes')
-      .insert([{ post_id: postId, user_id: userId }])
-      .select();
+      .insert([{ post_id: postId, user_id: userId }]);
 
     if (error) {
       console.error('いいね追加エラー:', error);
