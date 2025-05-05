@@ -32,12 +32,28 @@ export default function LikeAndShare({ postId }: LikeAndShareProps) {
     if (isLoading) return;
     
     setIsLoading(true);
+    
+    // 楽観的UI更新 - 即座にUIを更新
+    const newIsLiked = !isLiked;
+    const newCount = newIsLiked ? likesCount + 1 : likesCount - 1;
+    
+    setIsLiked(newIsLiked);
+    setLikesCount(newCount);
+    
     try {
+      // バックグラウンドでAPIを呼び出し
       const { count, isLiked } = await toggleLike(postId);
-      setLikesCount(count);
-      setIsLiked(isLiked);
+      
+      // APIレスポンスと異なる場合のみ更新
+      if (count !== newCount || isLiked !== newIsLiked) {
+        setLikesCount(count);
+        setIsLiked(isLiked);
+      }
     } catch (error) {
       console.error("いいね処理に失敗しました:", error);
+      // エラー時は元の状態に戻す
+      setIsLiked(!newIsLiked);
+      setLikesCount(newIsLiked ? newCount - 1 : newCount + 1);
     } finally {
       setIsLoading(false);
     }
