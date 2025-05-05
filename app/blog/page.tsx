@@ -25,8 +25,7 @@ export default function BlogsPage() {
 
   return (
     <div>
-      <Header />
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto pt-40 pb-20">
         <h1 className="mb-6 text-3xl font-bold">ブログ記事一覧</h1>
       </div>
       <div className="mr-32 mb-20 ml-32 flex gap-10">
@@ -35,7 +34,6 @@ export default function BlogsPage() {
         </div>
         <Sidebar blogs={blogs} />
       </div>
-      <Footer />
     </div>
   );
 }

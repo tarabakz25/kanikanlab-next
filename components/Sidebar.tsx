@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { FaTwitter, FaGithub, FaTag } from "react-icons/fa";
-
+import Link from "next/link";
 import { Blog } from "@/types";
 import { HoverTextHeader } from "./Animation";
 
@@ -58,13 +58,13 @@ export default function Sidebar({ blogs }: Props) {
           {uniqueCategories.map((category, index) => (
             <li key={`category-${index}`}>
               <HoverTextHeader>
-                <a
-                  href={`/blog/categories/${category}`}
+                <Link
+                  href={`/blog/categories/${encodeURIComponent(category)}`}
                   className="decoration-none relative block pl-3"
                 >
                   <FaTag className="absolute top-1.5 left-[-0.5rem]" />
                   {category}
-                </a>
+                </Link>
               </HoverTextHeader>
             </li>
           ))}
