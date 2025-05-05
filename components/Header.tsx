@@ -14,7 +14,7 @@ export default function Header() {
           height={30}
           className="dark:invert"
         />
-        <span>KanikanLab</span>
+        <span className="">KanikanLab</span>
       </a>
       <div className="flex items-center gap-20">
         <a href="/about" className="animate-text-underline relative">
