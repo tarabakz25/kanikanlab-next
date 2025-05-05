@@ -13,9 +13,12 @@ export async function POST(request: NextRequest) {
 
     // サーバーサイドでzenn-markdown-htmlを使用
     const markdownModule = await import('zenn-markdown-html');
-    const markdownToHtml = markdownModule.default;
+    // 正しい型キャストを使用
+    const markdownToHtml = markdownModule.default as unknown as (markdown: string, options?: { embedOrigin?: string }) => string;
     
-    const html = markdownToHtml(text);
+    const html = markdownToHtml(text, {
+      embedOrigin: "https://embed.zenn.studio"
+    });
     
     return NextResponse.json({ html });
   } catch (error) {
