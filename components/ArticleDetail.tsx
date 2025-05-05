@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { client } from "@/lib/microClient";
 import { Blog } from "@/types";
 
+import markdownToHtml from 'zenn-markdown-html';
+
 // サーバーサイドでzenn-markdown-htmlを使用するためのユーティリティ関数
 async function convertMarkdownToHtml(markdown: string): Promise<string> {
   try {

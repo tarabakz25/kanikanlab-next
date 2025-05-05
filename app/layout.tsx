@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { TypekitLoader } from "@/components/TypekitLoader";
 import { ThemeProvider } from "@/components/ThemeProvider";
+
 import "./globals.css";
-import "zenn-content-css/lib/index.css";
+import 'zenn-content-css';
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -21,6 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
+      <head>
+        <script src="https://embed.zenn.studio/js/listen-embed-event.js"></script>
+      </head>
       <body className="font-[fot-tsukuardgothic-std] antialiased text-black dark:text-white bg-white dark:bg-black">
         {/* <ThemeProvider> */}
           <TypekitLoader />

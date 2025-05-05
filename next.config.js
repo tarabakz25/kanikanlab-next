@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['zenn-markdown-html', 'zenn-content-css'],
+  /* config options here */
   images: {
     domains: ['images.microcms-assets.io'],
   },
 };
 
-export default nextConfig; 
+module.exports = nextConfig; 
