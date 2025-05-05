@@ -4,6 +4,20 @@ import { notFound } from "next/navigation";
 import { client } from "@/lib/microClient";
 import { Blog } from "@/types";
 
+// サーバーサイドでzenn-markdown-htmlを使用するためのユーティリティ関数
+async function convertMarkdownToHtml(markdown: string): Promise<string> {
+  try {
+    // 動的インポートでモジュールを読み込む
+    const mod = await import('zenn-markdown-html');
+    // defaultエクスポートを使用
+    const html = (mod.default as any)(markdown);
+    return html;
+  } catch (error) {
+    console.error('Markdownの変換に失敗しました:', error);
+    return markdown; // エラー時は元のMarkdownを返す
+  }
+}
+
 type Props = {
   blog: Blog;
 };
@@ -32,6 +46,9 @@ export default async function ArticleDetail({
     if (!blog) {
       return notFound();
     }
+    
+    // Markdownをzenn形式のHTMLに変換
+    const htmlContent = await convertMarkdownToHtml(blog.blog.body);
 
     return (
       <div className="container mx-auto px-4">
@@ -57,8 +74,8 @@ export default async function ArticleDetail({
             .replace(/\//g, "-")}
         </p>
         <div
-          dangerouslySetInnerHTML={{ __html: blog.blog.body }}
-          className="prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+          className="znc max-w-none"
         />
       </div>
     );
