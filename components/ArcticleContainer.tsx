@@ -18,7 +18,7 @@ export default function ArcticleContainer({ blogs }: Props) {
           <Link
             href={`/blog/posts/${blog.id}`}
             key={blog.id}
-            className="mb-2 flex transform flex-col overflow-hidden rounded-lg shadow-md transition hover:-translate-y-1 hover:shadow-xl"
+            className="mb-2 flex transform flex-col overflow-hidden rounded-lg shadow-md transition hover:-translate-y-1 hover:shadow-xl dark:bg-gray-900"
           >
             <div className="relative">
               <div className="absolute top-2 left-2 z-10 flex flex-wrap gap-1.5">

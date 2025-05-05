@@ -31,9 +31,8 @@ export default async function BlogPost({ params }: { params: { id: string } }) {
   });
 
   return (
-    <>
-      <Header />
-      <div className="mt-20 mr-32 mb-20 ml-32 flex gap-10">
+    <div>
+      <div className="pt-50 mr-32 mb-20 ml-32 flex gap-10">
         <LikeAndShare />
         <div>
           <Breadcumbs
@@ -51,7 +50,6 @@ export default async function BlogPost({ params }: { params: { id: string } }) {
         </div>
         <Sidebar blogs={blogList.contents} />
       </div>
-      <Footer />
-    </>
+    </div>
   );
 }

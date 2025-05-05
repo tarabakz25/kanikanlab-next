@@ -17,7 +17,7 @@ export default function LikeAndShare() {
       <div className="flex flex-col items-center gap-1">
         <button
           onClick={handleLike}
-          className="rounded-full bg-gray-100 p-2.5 text-2xl"
+          className="rounded-full bg-gray-900 p-2.5 text-2xl"
         >
           {isLiked ? (
             <FaHeart className="transform text-red-500 transition-all hover:scale-110" />
@@ -31,7 +31,7 @@ export default function LikeAndShare() {
         onClick={() => {
           redirect(`https://twitter.com/share?url=${window.location.href}`);
         }}
-        className="rounded-full bg-gray-100 p-2.5 text-2xl"
+        className="rounded-full bg-gray-900 p-2.5 text-2xl"
       >
         <FaShareFromSquare className="transform transition-all hover:scale-110 hover:text-blue-500" />
       </button>

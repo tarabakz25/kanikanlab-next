@@ -3,6 +3,9 @@ import { TypekitLoader } from "@/components/TypekitLoader";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
 import Head from "next/head";
 
 export const metadata: Metadata = {
@@ -17,11 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body className="font-[fot-tsukuardgothic-std] antialiased">
-        <ThemeProvider>
+      <body className="font-[fot-tsukuardgothic-std] antialiased text-black dark:text-white bg-white dark:bg-black">
+        {/* <ThemeProvider> */}
           <TypekitLoader />
+          <Header />
           {children}
-        </ThemeProvider>
+          <Footer />
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );

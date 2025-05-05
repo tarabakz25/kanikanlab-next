@@ -26,17 +26,15 @@ export default function Home() {
   }, [])
 
   return (
-    <div>
-      <Header />
+    <div className="pt-20 pb-20 text-black dark:text-white bg-white dark:bg-black">
       <TopContainer />
-      <div className="flex ml-32 mr-32 gap-10 mb-20">
+      <div className="flex ml-32 mr-32 gap-10">
         <div>
           <h1 className="text-2xl font-[krok] tracking-wider mb-10 mt-5 text-center">最新の記事</h1>
           <ArcticleContainer blogs={blogs} />
         </div>
         <Sidebar blogs={blogs} />
       </div>
-      <Footer />
     </div>
   )
 }

@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 
+import { HoverTextBreadcumbs } from "@/components/Animation";
+
 export type BreadcrumbItem = {
   label: string;
   href: string;
@@ -30,16 +32,13 @@ const Breadcumbs: React.FC<BreadcrumbsProps> = ({ items, className = "" }) => {
               )}
 
               {isLast || item.isCurrent ? (
-                <span className="font-medium text-gray-900" aria-current="page">
+                <span className="font-medium text-gray-400" aria-current="page">
                   {item.label}
                 </span>
               ) : (
-                <Link
-                  href={item.href}
-                  className="hover:text-gray-700 hover:underline"
-                >
-                  {item.label}
-                </Link>
+                <HoverTextBreadcumbs>
+                  <Link href={item.href}>{item.label}</Link>
+                </HoverTextBreadcumbs>
               )}
             </li>
           );

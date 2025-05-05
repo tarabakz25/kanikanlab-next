@@ -2,6 +2,7 @@ import Image from "next/image";
 import { FaTwitter, FaGithub, FaTag } from "react-icons/fa";
 
 import { Blog } from "@/types";
+import { HoverTextHeader } from "./Animation";
 
 type Props = {
   blogs: Blog[];
@@ -9,8 +10,8 @@ type Props = {
 
 export default function Sidebar({ blogs }: Props) {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex w-72 flex-col items-center gap-2 rounded-lg p-4 shadow-md">
+    <div className="flex flex-col gap-10 ">
+      <div className="flex w-72 flex-col items-center gap-2 rounded-2xl p-4 shadow-md dark:bg-gray-900">
         <Image
           src="/WriterIcon.png"
           alt="logo"
@@ -40,7 +41,7 @@ export default function Sidebar({ blogs }: Props) {
           </a>
         </div>
       </div>
-      <div className="flex flex-col items-center rounded-2xl p-2 pt-5 pb-5 shadow-lg">
+      <div className="flex flex-col items-center rounded-2xl p-2 pt-5 pb-5 shadow-lg dark:bg-gray-900">
         <h3 className="mt-5 mb-10 font-[krok] text-2xl tracking-wider">
           Category
         </h3>
@@ -49,24 +50,28 @@ export default function Sidebar({ blogs }: Props) {
             return Array.isArray(blog.categories) ? (
               blog.categories.map((cat, idx: number) => (
                 <li key={`${blogIndex}-${idx}`}>
-                  <a
-                    href={`/blog/categories/${cat.category}`}
-                    className="decoration-none relative block pl-3"
+                  <HoverTextHeader>
+                    <a
+                      href={`/blog/categories/${cat.category}`}
+                      className="decoration-none relative block pl-3"
                   >
-                    <FaTag className="absolute top-1.5 left-[-0.5rem]" />
-                    {cat.category}
-                  </a>
+                      <FaTag className="absolute top-1.5 left-[-0.5rem]" />
+                      {cat.category}
+                    </a>
+                  </HoverTextHeader>
                 </li>
               ))
             ) : (
               <li key={`single-${blogIndex}`}>
-                <a
-                  href={`/blog/categories/${(blog.categories as { category: string }).category}`}
+                <HoverTextHeader>
+                  <a
+                    href={`/blog/categories/${(blog.categories as { category: string }).category}`}
                   className="decoration-none text-underline relative block pl-3"
                 >
                   <FaTag className="absolute top-1.5 left-[-0.5rem]" />
-                  {(blog.categories as { category: string }).category}
-                </a>
+                    {(blog.categories as { category: string }).category}
+                  </a>
+                </HoverTextHeader>
               </li>
             );
           })}
