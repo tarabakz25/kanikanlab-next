@@ -12,7 +12,9 @@ async function convertMarkdownToHtml(markdown: string): Promise<string> {
     // 動的インポートでモジュールを読み込む
     const mod = await import('zenn-markdown-html');
     // defaultエクスポートを使用
-    const html = (mod.default as any)(markdown);
+    const html = (mod.default as any)(markdown, {
+      embedOrigin: "https://embed.zenn.studio"
+    });
     return html;
   } catch (error) {
     console.error('Markdownの変換に失敗しました:', error);
