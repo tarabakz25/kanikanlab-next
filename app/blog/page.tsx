@@ -9,7 +9,6 @@ import Loading from "@/components/Loading";
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -21,8 +20,6 @@ export default function BlogsPage() {
         setBlogs(data.contents);
       } catch (error) {
         console.error("ブログ記事の取得に失敗しました:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchBlogs();

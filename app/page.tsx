@@ -10,7 +10,6 @@ import { client } from "@/lib/microClient"
 
 export default function Home() {
   const [blogs, setBlogs] = useState<Blog[]>([])
-  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -23,8 +22,6 @@ export default function Home() {
         console.log("取得したブログ -> ", data.contents.map((blog) => blog.title))
       } catch (error) {
         console.error("ブログ記事の取得に失敗しました:", error)
-      } finally {
-        setIsLoading(false)
       }
     }
     fetchBlogs()
