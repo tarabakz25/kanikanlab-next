@@ -10,6 +10,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TwitterScriptLoader from "@/components/TwitterScriptLoader";
 
+import { Zen_Kaku_Gothic_New } from "next/font/google";
+
+const zenKakuGothicNew = Zen_Kaku_Gothic_New({
+  weight: ["400", "500", "700", "900"],
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "KanikanLab",
 };
@@ -28,7 +35,9 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.webmanifest" />
         <Script src="https://embed.zenn.studio/js/listen-embed-event.js" />
       </head>
-      <body className="bg-white font-[fot-tsukuardgothic-std] text-black antialiased dark:bg-black dark:text-white">
+      <body
+        className={`${zenKakuGothicNew.className} bg-white font-[fot-tsukuardgothic-std] text-black antialiased dark:bg-black dark:text-white`}
+      >
         <ThemeProvider>
           <TwitterScriptLoader />
           <TypekitLoader />

@@ -19,6 +19,7 @@ const histories = {
 export default function About() {
   return (
     <div className="flex flex-col gap-30 bg-white pt-50 pb-20 text-black dark:bg-black dark:text-white">
+      {/* About */}
       <div className="mx-auto flex flex-col gap-20 px-4 py-4 text-center">
         <h1 className="font-[krok] text-5xl tracking-wider">About</h1>
         <div className="flex items-center justify-center gap-10">
@@ -54,6 +55,23 @@ export default function About() {
           </div>
         </div>
       </div>
+      {/* Values */}
+      <div className="flex flex-col items-center gap-10">
+        <h1 className="font-[krok] text-5xl tracking-wider">Values</h1>
+        <div className="flex flex-col items-center gap-10">
+          <p className="text-2xl">
+            <i>
+              Beyond the Cutting Edge of{" "}
+              <span className="font-bold">Tech</span> and{" "}
+              <span className="font-bold">Entertainment</span>.
+            </i>
+          </p>
+          <p className="text-2xl">
+            テクノロジーとエンタメの最先端を行く。
+          </p>
+        </div>
+      </div>
+      {/* Skills */}
       <div className="flex flex-col items-center gap-10">
         <h1 className="font-[krok] text-5xl tracking-wider">Skills</h1>
         <div className="flex flex-col items-center gap-2">
