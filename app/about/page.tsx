@@ -75,7 +75,7 @@ export default function About() {
       <div className="flex flex-col items-center gap-10">
         <h1 className="font-[krok] text-5xl tracking-wider">Skills</h1>
         <div className="flex flex-col items-center gap-2">
-          <h3>Languages</h3>
+          <h3 className="text-2xl">Languages</h3>
           <div className="flex gap-10">
             {skills.languages.map((language) => (
               <Image
@@ -89,7 +89,7 @@ export default function About() {
           </div>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <h3>Frameworks</h3>
+          <h3 className="text-2xl">Frameworks</h3>
           <div className="flex gap-10">
             {skills.frameworks.map((framework) => (
               <Image
@@ -103,7 +103,7 @@ export default function About() {
           </div>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <h3>Tools</h3>
+          <h3 className="text-2xl">Tools</h3>
           <div className="flex gap-10">
             {skills.tools.map((tool) => (
               <Image
