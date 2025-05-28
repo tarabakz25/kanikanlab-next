@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Blog } from "@/types";
-import { getBlogList } from "@/lib/notionHelpers";
 
 import Sidebar from "@/components/Sidebar";
 import ArcticleContainer from "@/components/ArcticleContainer";
@@ -13,7 +12,11 @@ export default function BlogsPage() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const data = await getBlogList(20);
+        const response = await fetch('/api/blogs?limit=20');
+        if (!response.ok) {
+          throw new Error('ブログ記事の取得に失敗しました');
+        }
+        const data = await response.json();
         setBlogs(data);
       } catch (error) {
         console.error("ブログ記事の取得に失敗しました:", error);

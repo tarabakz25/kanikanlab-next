@@ -6,7 +6,6 @@ import Loading from "@/components/Loading"
 
 import { useState, useEffect } from "react"
 import { Blog } from "@/types"
-import { getBlogList } from "@/lib/notionHelpers"
 
 export default function Home() {
   const [blogs, setBlogs] = useState<Blog[]>([])
@@ -14,11 +13,15 @@ export default function Home() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const data = await getBlogList(10)
-        setBlogs(data)
-        console.log("取得したブログ -> ", data.map((blog) => blog.title))
+        const response = await fetch('/api/blogs?limit=10');
+        if (!response.ok) {
+          throw new Error('ブログ記事の取得に失敗しました');
+        }
+        const data = await response.json();
+        setBlogs(data);
+        console.log("取得したブログ -> ", data.map((blog: Blog) => blog.title));
       } catch (error) {
-        console.error("ブログ記事の取得に失敗しました:", error)
+        console.error("ブログ記事の取得に失敗しました:", error);
       }
     }
     fetchBlogs()

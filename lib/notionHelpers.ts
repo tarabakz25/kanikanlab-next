@@ -7,6 +7,7 @@ import {
   NotionBlockResponse
 } from "@/types";
 import { isFullBlock } from "@notionhq/client";
+import "server-only";
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,

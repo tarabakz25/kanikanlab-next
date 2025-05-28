@@ -7,11 +7,11 @@ const notion = new Client({
 
 export async function getNotionData() {
   return fetch(
-    'https://api.notion.com/v1/databases/' + process.env.NOTION_DATABASE_ID + '/query',
+    'https://api.notion.com/v1/databases/' + process.env.NEXT_PUBLIC_NOTION_DATABASE_ID + '/query',
     {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTION_API_KEY}`,
         'Notion-Version': '2022-06-28',
         'Content-Type': 'application/json',
       },
