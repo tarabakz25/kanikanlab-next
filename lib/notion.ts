@@ -2,7 +2,7 @@ import { Client } from "@notionhq/client";
 import "server-only";
 
 const notion = new Client({
-  auth: process.env.NOTION_API_KEY,
+  auth: process.env.NEXT_PUBLIC_NOTION_API_KEY,
 });
 
 export async function getNotionData() {
