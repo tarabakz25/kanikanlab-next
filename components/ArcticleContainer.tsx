@@ -1,8 +1,6 @@
-import { GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { client } from "@/lib/microClient";
 import { Blog } from "@/types";
 import Tag from "./ui/Tag";
 
@@ -59,16 +57,3 @@ export default function ArcticleContainer({ blogs }: Props) {
     </div>
   );
 }
-
-export const getStaticProps: GetStaticProps<Props> = async () => {
-  const data = await client.getList<Blog>({
-    endpoint: "blogs",
-    queries: {
-      limit: 10,
-    },
-  });
-  return {
-    props: { blogs: data.contents },
-    revalidate: 30,
-  };
-};
