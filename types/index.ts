@@ -20,11 +20,6 @@ export type NotionPage = {
         plain_text: string;
       }>;
     };
-    content?: {
-      rich_text: Array<{
-        plain_text: string;
-      }>;
-    };
     publishedAt?: {
       date?: {
         start: string;
