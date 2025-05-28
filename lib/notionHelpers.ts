@@ -82,8 +82,10 @@ function convertBlocksToMarkdown(blocks: NotionBlockResponse[]): string {
         break;
         
       case 'image':
-        const imageUrl = block.image?.file?.url || block.image?.external?.url || '';
-        const caption = block.image?.caption?.map((text: NotionRichText) => text.plain_text).join('') || '';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const imageUrl = (block.image as any)?.file?.url || (block.image as any)?.external?.url || '';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const caption = (block.image as any)?.caption?.map((text: NotionRichText) => text.plain_text).join('') || '';
         markdown += `![${caption}](${imageUrl})\n\n`;
         break;
         
@@ -120,15 +122,19 @@ async function getPageContent(pageId: string): Promise<string> {
 
 // NotionページをBlog型に変換するヘルパー関数（軽量版：本文なし）
 function convertNotionPageToBlogLight(page: NotionPage): Blog {
-  const title = page.properties.title?.title?.[0]?.plain_text || "タイトルなし";
-  const publishedAt = page.properties.publishedAt?.date?.start || page.created_time;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const title = (page.properties.title as any)?.title?.[0]?.plain_text || "タイトルなし";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publishedAt = (page.properties.publishedAt as any)?.date?.start || page.created_time;
   
   // ヒーロー画像の取得
-  const heroImageFiles = page.properties.heroImage?.files || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const heroImageFiles = (page.properties.heroImage as any)?.files || [];
   const heroImageUrl = heroImageFiles[0]?.file?.url || heroImageFiles[0]?.external?.url || "";
   
   // カテゴリーの取得
-  const categories = page.properties.categories?.multi_select?.map(cat => cat.name) || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const categories = (page.properties.categories as any)?.multi_select?.map((cat: any) => cat.name) || [];
 
   return {
     id: page.id,
@@ -144,19 +150,23 @@ function convertNotionPageToBlogLight(page: NotionPage): Blog {
 
 // NotionページをBlog型に変換するヘルパー関数（完全版：本文あり）
 export async function convertNotionPageToBlog(page: NotionPage): Promise<Blog> {
-  const title = page.properties.title?.title?.[0]?.plain_text || "タイトルなし";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const title = (page.properties.title as any)?.title?.[0]?.plain_text || "タイトルなし";
   
   // ページの中身から本文を取得
   const body = await getPageContent(page.id);
   
-  const publishedAt = page.properties.publishedAt?.date?.start || page.created_time;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publishedAt = (page.properties.publishedAt as any)?.date?.start || page.created_time;
   
   // ヒーロー画像の取得
-  const heroImageFiles = page.properties.heroImage?.files || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const heroImageFiles = (page.properties.heroImage as any)?.files || [];
   const heroImageUrl = heroImageFiles[0]?.file?.url || heroImageFiles[0]?.external?.url || "";
   
   // カテゴリーの取得
-  const categories = page.properties.categories?.multi_select?.map(cat => cat.name) || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const categories = (page.properties.categories as any)?.multi_select?.map((cat: any) => cat.name) || [];
 
   return {
     id: page.id,

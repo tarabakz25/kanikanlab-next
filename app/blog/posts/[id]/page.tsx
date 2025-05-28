@@ -1,12 +1,14 @@
 import { getBlogPost } from "@/lib/notionHelpers";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 
 export default async function BlogPostPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const blog = await getBlogPost(params.id);
+  const { id } = await params;
+  const blog = await getBlogPost(id);
 
   if (!blog) {
     return notFound();
@@ -21,9 +23,11 @@ export default async function BlogPostPage({
         </p>
         
         {blog.heroImage.url && (
-          <img 
+          <Image 
             src={blog.heroImage.url} 
             alt={blog.title}
+            width={800}
+            height={256}
             className="w-full h-64 object-cover rounded-lg mb-8"
           />
         )}

@@ -1,18 +1,20 @@
 import { getBlogsByCategory } from "@/lib/notionHelpers";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function TagPage({
   params,
 }: {
-  params: { tag: string };
+  params: Promise<{ tag: string }>;
 }) {
-  const blogs = await getBlogsByCategory(params.tag);
+  const { tag } = await params;
+  const blogs = await getBlogsByCategory(tag);
 
   if (blogs.length === 0) {
     return (
       <div className="min-h-screen p-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">カテゴリー: {params.tag}</h1>
+          <h1 className="text-3xl font-bold mb-8">カテゴリー: {tag}</h1>
           <p>このカテゴリーの記事はありません。</p>
         </div>
       </div>
@@ -22,7 +24,7 @@ export default async function TagPage({
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">カテゴリー: {params.tag}</h1>
+        <h1 className="text-3xl font-bold mb-8">カテゴリー: {tag}</h1>
         <div className="space-y-8">
           {blogs.map((blog) => (
             <article key={blog.id} className="border-b pb-8">
@@ -34,9 +36,11 @@ export default async function TagPage({
                   {blog.title}
                 </h2>
                 {blog.heroImage.url && (
-                  <img 
+                  <Image 
                     src={blog.heroImage.url} 
                     alt={blog.title}
+                    width={800}
+                    height={192}
                     className="w-full h-48 object-cover rounded-lg mb-4"
                   />
                 )}
