@@ -1,8 +1,11 @@
 import { getBlogPost } from "@/lib/notionHelpers";
 import { notFound } from "next/navigation";
-import Image from "next/image";
+import Sidebar from "@/components/Sidebar";
+import Breadcumbs from "@/components/Breadcumbs";
+import ArticleDetail from "@/components/ArticleDetail";
+import LikeAndShare from "@/components/LikeAndShare";
 
-export default async function BlogPostPage({
+export default async function BlogPost({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -14,41 +17,28 @@ export default async function BlogPostPage({
     return notFound();
   }
 
+  // サイドバー用のブログ記事一覧を取得（仮のデータ）
+  const blogList = { contents: [] }; // 必要に応じて実際のデータ取得に変更
+
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
-        <p className="text-gray-600 mb-8">
-          {new Date(blog.publishedAt).toLocaleDateString('ja-JP')}
-        </p>
-        
-        {blog.heroImage.url && (
-          <Image 
-            src={blog.heroImage.url} 
-            alt={blog.title}
-            width={800}
-            height={256}
-            className="w-full h-64 object-cover rounded-lg mb-8"
+    <div>
+      <div className="pt-50 mr-32 mb-20 ml-32 flex gap-10">
+        <LikeAndShare postId={id} />
+        <div>
+          <Breadcumbs
+            items={[
+              { label: "ホーム", href: "/" },
+              { label: "ブログ", href: "/blog" },
+              {
+                label: `${blog.title}`,
+                href: `/blog/posts/${id}`,
+              },
+            ]}
+            className="mb-5 pl-5"
           />
-        )}
-
-        <div className="flex flex-wrap gap-2 mb-8">
-          {blog.categories.map((category) => (
-            <span 
-              key={category}
-              className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded"
-            >
-              {category}
-            </span>
-          ))}
+          <ArticleDetail params={{ id }} />
         </div>
-
-        <div 
-          className="prose prose-lg max-w-none"
-          dangerouslySetInnerHTML={{ 
-            __html: blog.body.replace(/\n/g, '<br/>') 
-          }}
-        />
+        <Sidebar blogs={blogList.contents} />
       </div>
     </div>
   );

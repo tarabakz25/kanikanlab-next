@@ -50,6 +50,21 @@ export default async function ArticleDetail({
           </div>
         )}
         <h1 className="mb-4 text-3xl font-bold">{blog.title}</h1>
+        
+        {/* カテゴリー表示 */}
+        {blog.categories && blog.categories.length > 0 && (
+          <div className="mb-4 flex flex-wrap gap-2">
+            {blog.categories.map((category) => (
+              <span 
+                key={category}
+                className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+              >
+                {category}
+              </span>
+            ))}
+          </div>
+        )}
+        
         <p className="mb-8 text-gray-500">
           {new Date(blog.publishedAt)
             .toLocaleDateString("ja-JP", {
