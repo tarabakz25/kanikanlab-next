@@ -1,55 +1,62 @@
-import { Blog } from "@/types";
-import { getBlogsByCategory, getBlogList } from "@/lib/notionHelpers";
-import { notFound } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
-import ArcticleContainer from "@/components/ArcticleContainer";
-import Breadcumbs from "@/components/Breadcumbs";
+import { getBlogsByCategory } from "@/lib/notionHelpers";
+import Link from "next/link";
 
-type CategoryParams = Promise<{ tag: string }>;
-
-export default async function CategoryPage({
+export default async function TagPage({
   params,
 }: {
-  params: CategoryParams;
+  params: { tag: string };
 }) {
-  const resolvedParams = await params;
-  const category = decodeURIComponent(resolvedParams.tag);
+  const blogs = await getBlogsByCategory(params.tag);
 
-  // カテゴリーに属する記事を取得
-  let blogs;
-  try {
-    blogs = await getBlogsByCategory(category, 100);
-  } catch (error) {
-    console.error("カテゴリー記事の取得に失敗しました:", error);
-    return notFound();
+  if (blogs.length === 0) {
+    return (
+      <div className="min-h-screen p-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8">カテゴリー: {params.tag}</h1>
+          <p>このカテゴリーの記事はありません。</p>
+        </div>
+      </div>
+    );
   }
 
-  // サイドバー用の最新記事を取得
-  const recentBlogs = await getBlogList(5);
-
   return (
-    <div>
-      <div className="container mx-auto pt-40 pb-20">
-        <Breadcumbs
-          items={[
-            { label: "ホーム", href: "/" },
-            { label: "ブログ", href: "/blog" },
-            { label: "カテゴリー一覧", href: "" },
-            { label: category, href: `/blog/categories/${resolvedParams.tag}` },
-          ]}
-          className="mb-5"
-        />
-        <h1 className="mb-6 text-3xl font-bold">カテゴリー: {category}</h1>
-      </div>
-      <div className="mr-32 mb-20 ml-32 flex gap-10">
-        <div className="flex-1">
-          {blogs.length > 0 ? (
-            <ArcticleContainer blogs={blogs} />
-          ) : (
-            <p>このカテゴリーの記事はまだありません。</p>
-          )}
+    <div className="min-h-screen p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">カテゴリー: {params.tag}</h1>
+        <div className="space-y-8">
+          {blogs.map((blog) => (
+            <article key={blog.id} className="border-b pb-8">
+              <Link 
+                href={`/blog/posts/${blog.id}`}
+                className="group block hover:bg-gray-50 p-4 rounded-lg transition-colors"
+              >
+                <h2 className="text-2xl font-semibold mb-2 group-hover:text-blue-600">
+                  {blog.title}
+                </h2>
+                {blog.heroImage.url && (
+                  <img 
+                    src={blog.heroImage.url} 
+                    alt={blog.title}
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                  />
+                )}
+                <p className="text-gray-600 text-sm">
+                  {new Date(blog.publishedAt).toLocaleDateString('ja-JP')}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {blog.categories.map((category) => (
+                    <span 
+                      key={category}
+                      className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                    >
+                      {category}
+                    </span>
+                  ))}
+                </div>
+              </Link>
+            </article>
+          ))}
         </div>
-        <Sidebar blogs={recentBlogs} />
       </div>
     </div>
   );

@@ -1,47 +1,50 @@
-import { Blog } from "@/types";
-import ArticleDetail from "@/components/ArticleDetail";
-import Sidebar from "@/components/Sidebar";
-import Breadcumbs from "@/components/Breadcumbs";
-import { getBlogPost, getBlogList } from "@/lib/notionHelpers";
+import { getBlogPost } from "@/lib/notionHelpers";
 import { notFound } from "next/navigation";
-import LikeAndShare from "@/components/LikeAndShare";
 
-type PostParams = Promise<{ id: string }>;
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const blog = await getBlogPost(params.id);
 
-export default async function BlogPost({ params }: { params: PostParams }) {
-  // paramsを非同期で解決
-  const resolvedParams = await params;
-
-  // 現在の記事情報を取得
-  const currentBlog = await getBlogPost(resolvedParams.id);
-  
-  if (!currentBlog) {
-    console.error("記事の取得に失敗しました");
+  if (!blog) {
     return notFound();
   }
 
-  // サイドバー用のブログ記事一覧を取得
-  const blogList = await getBlogList(5);
-
   return (
-    <div>
-      <div className="pt-50 mr-32 mb-20 ml-32 flex gap-10">
-        <LikeAndShare postId={resolvedParams.id} />
-        <div>
-          <Breadcumbs
-            items={[
-              { label: "ホーム", href: "/" },
-              { label: "ブログ", href: "/blog" },
-              {
-                label: `${currentBlog.title}`,
-                href: `/blog/posts/${resolvedParams.id}`,
-              },
-            ]}
-            className="mb-5 pl-5"
+    <div className="min-h-screen p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
+        <p className="text-gray-600 mb-8">
+          {new Date(blog.publishedAt).toLocaleDateString('ja-JP')}
+        </p>
+        
+        {blog.heroImage.url && (
+          <img 
+            src={blog.heroImage.url} 
+            alt={blog.title}
+            className="w-full h-64 object-cover rounded-lg mb-8"
           />
-          <ArticleDetail params={resolvedParams} />
+        )}
+
+        <div className="flex flex-wrap gap-2 mb-8">
+          {blog.categories.map((category) => (
+            <span 
+              key={category}
+              className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded"
+            >
+              {category}
+            </span>
+          ))}
         </div>
-        <Sidebar blogs={blogList} />
+
+        <div 
+          className="prose prose-lg max-w-none"
+          dangerouslySetInnerHTML={{ 
+            __html: blog.body.replace(/\n/g, '<br/>') 
+          }}
+        />
       </div>
     </div>
   );

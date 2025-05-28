@@ -1,59 +1,79 @@
-import { notion, NOTION_DATABASE_ID } from './notionClient';
-import { Blog, NotionPage } from '@/types';
+import { Client } from "@notionhq/client";
+import { 
+  Blog, 
+  NotionPage, 
+  NotionBlock, 
+  NotionRichText, 
+  NotionBlockResponse
+} from "@/types";
+import { isFullBlock } from "@notionhq/client";
 
-// Notion blocks をMarkdownに変換するヘルパー関数
-function convertBlocksToMarkdown(blocks: any[]): string {
+const notion = new Client({
+  auth: process.env.NOTION_TOKEN,
+});
+
+const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID!;
+
+// NotionのBlocksをMarkdownに変換
+function convertBlocksToMarkdown(blocks: NotionBlockResponse[]): string {
   let markdown = '';
   
-  for (const block of blocks) {
+  for (const blockResponse of blocks) {
+    // 型ガードを使用して完全なブロックかどうかを確認
+    if (!isFullBlock(blockResponse)) {
+      continue; // パーシャルブロックはスキップ
+    }
+    
+    const block = blockResponse as NotionBlock;
+    
     switch (block.type) {
       case 'paragraph':
-        const paragraphText = block.paragraph.rich_text
-          .map((text: any) => {
-            let content = text.plain_text;
-            if (text.annotations.bold) content = `**${content}**`;
-            if (text.annotations.italic) content = `*${content}*`;
-            if (text.annotations.code) content = `\`${content}\``;
-            if (text.href) content = `[${content}](${text.href})`;
-            return content;
-          })
-          .join('');
+        const paragraphText = block.paragraph?.rich_text?.map((text: NotionRichText) => {
+          let content = text.plain_text || '';
+          if (text.annotations?.bold) content = `**${content}**`;
+          if (text.annotations?.italic) content = `*${content}*`;
+          if (text.annotations?.strikethrough) content = `~~${content}~~`;
+          if (text.annotations?.code) content = `\`${content}\``;
+          if (text.href) content = `[${content}](${text.href})`;
+          return content;
+        })
+        .join('') || '';
         markdown += `${paragraphText}\n\n`;
         break;
         
       case 'heading_1':
-        const h1Text = block.heading_1.rich_text.map((text: any) => text.plain_text).join('');
+        const h1Text = block.heading_1?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
         markdown += `# ${h1Text}\n\n`;
         break;
         
       case 'heading_2':
-        const h2Text = block.heading_2.rich_text.map((text: any) => text.plain_text).join('');
+        const h2Text = block.heading_2?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
         markdown += `## ${h2Text}\n\n`;
         break;
         
       case 'heading_3':
-        const h3Text = block.heading_3.rich_text.map((text: any) => text.plain_text).join('');
+        const h3Text = block.heading_3?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
         markdown += `### ${h3Text}\n\n`;
         break;
         
       case 'bulleted_list_item':
-        const bulletText = block.bulleted_list_item.rich_text.map((text: any) => text.plain_text).join('');
+        const bulletText = block.bulleted_list_item?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
         markdown += `- ${bulletText}\n`;
         break;
         
       case 'numbered_list_item':
-        const numberedText = block.numbered_list_item.rich_text.map((text: any) => text.plain_text).join('');
+        const numberedText = block.numbered_list_item?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
         markdown += `1. ${numberedText}\n`;
         break;
         
       case 'code':
-        const codeText = block.code.rich_text.map((text: any) => text.plain_text).join('');
-        const language = block.code.language || '';
+        const codeText = block.code?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
+        const language = block.code?.language || '';
         markdown += `\`\`\`${language}\n${codeText}\n\`\`\`\n\n`;
         break;
         
       case 'quote':
-        const quoteText = block.quote.rich_text.map((text: any) => text.plain_text).join('');
+        const quoteText = block.quote?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
         markdown += `> ${quoteText}\n\n`;
         break;
         
@@ -62,15 +82,16 @@ function convertBlocksToMarkdown(blocks: any[]): string {
         break;
         
       case 'image':
-        const imageUrl = block.image.file?.url || block.image.external?.url || '';
-        const caption = block.image.caption?.map((text: any) => text.plain_text).join('') || '';
+        const imageUrl = block.image?.file?.url || block.image?.external?.url || '';
+        const caption = block.image?.caption?.map((text: NotionRichText) => text.plain_text).join('') || '';
         markdown += `![${caption}](${imageUrl})\n\n`;
         break;
         
       default:
         // その他のブロックタイプはプレーンテキストとして扱う
-        if (block[block.type]?.rich_text) {
-          const text = block[block.type].rich_text.map((text: any) => text.plain_text).join('');
+        const blockData = block[block.type as keyof NotionBlock] as { rich_text?: NotionRichText[] };
+        if (blockData?.rich_text) {
+          const text = blockData.rich_text.map((text: NotionRichText) => text.plain_text).join('');
           if (text.trim()) {
             markdown += `${text}\n\n`;
           }
@@ -164,7 +185,7 @@ export async function getBlogList(limit: number = 10): Promise<Blog[]> {
     });
 
     // 軽量版で変換（本文取得せず）
-    return response.results.map((page: any) => convertNotionPageToBlogLight(page as NotionPage));
+    return response.results.map((page: unknown) => convertNotionPageToBlogLight(page as NotionPage));
   } catch (error) {
     console.error("Notion APIからのブログ記事取得に失敗しました:", error);
     return [];
@@ -206,7 +227,7 @@ export async function getBlogsByCategory(category: string, limit: number = 100):
     });
 
     // 軽量版で変換（本文取得せず）
-    return response.results.map((page: any) => convertNotionPageToBlogLight(page as NotionPage));
+    return response.results.map((page: unknown) => convertNotionPageToBlogLight(page as NotionPage));
   } catch (error) {
     console.error("Notion APIからのカテゴリー記事取得に失敗しました:", error);
     return [];
