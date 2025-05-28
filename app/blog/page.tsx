@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Blog } from "@/types";
-import { client } from "@/lib/microClient";
+import { getBlogList } from "@/lib/notionHelpers";
 
 import Sidebar from "@/components/Sidebar";
 import ArcticleContainer from "@/components/ArcticleContainer";
@@ -13,11 +13,8 @@ export default function BlogsPage() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const data = await client.getList<Blog>({
-          endpoint: "blogs",
-          queries: { limit: 20 },
-        });
-        setBlogs(data.contents);
+        const data = await getBlogList(20);
+        setBlogs(data);
       } catch (error) {
         console.error("ブログ記事の取得に失敗しました:", error);
       }

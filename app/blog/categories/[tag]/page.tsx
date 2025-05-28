@@ -1,5 +1,5 @@
 import { Blog } from "@/types";
-import { client } from "@/lib/microClient";
+import { getBlogsByCategory, getBlogList } from "@/lib/notionHelpers";
 import { notFound } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import ArcticleContainer from "@/components/ArcticleContainer";
@@ -18,24 +18,14 @@ export default async function CategoryPage({
   // カテゴリーに属する記事を取得
   let blogs;
   try {
-    const response = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries: {
-        filters: `categories[contains]${category}`,
-        limit: 100,
-      },
-    });
-    blogs = response.contents;
+    blogs = await getBlogsByCategory(category, 100);
   } catch (error) {
     console.error("カテゴリー記事の取得に失敗しました:", error);
     return notFound();
   }
 
   // サイドバー用の最新記事を取得
-  const recentBlogs = await client.getList<Blog>({
-    endpoint: "blogs",
-    queries: { limit: 5 },
-  });
+  const recentBlogs = await getBlogList(5);
 
   return (
     <div>
@@ -59,7 +49,7 @@ export default async function CategoryPage({
             <p>このカテゴリーの記事はまだありません。</p>
           )}
         </div>
-        <Sidebar blogs={recentBlogs.contents} />
+        <Sidebar blogs={recentBlogs} />
       </div>
     </div>
   );

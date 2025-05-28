@@ -6,7 +6,7 @@ import Loading from "@/components/Loading"
 
 import { useState, useEffect } from "react"
 import { Blog } from "@/types"
-import { client } from "@/lib/microClient"
+import { getBlogList } from "@/lib/notionHelpers"
 
 export default function Home() {
   const [blogs, setBlogs] = useState<Blog[]>([])
@@ -14,12 +14,9 @@ export default function Home() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const data = await client.getList<Blog>({
-          endpoint: "blogs",
-          queries: { limit: 10 },
-        })
-        setBlogs(data.contents)
-        console.log("取得したブログ -> ", data.contents.map((blog) => blog.title))
+        const data = await getBlogList(10)
+        setBlogs(data)
+        console.log("取得したブログ -> ", data.map((blog) => blog.title))
       } catch (error) {
         console.error("ブログ記事の取得に失敗しました:", error)
       }
