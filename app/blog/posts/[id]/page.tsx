@@ -1,4 +1,4 @@
-import { getBlogPost } from "@/lib/notionHelpers";
+import { getBlogPost, getBlogList } from "@/lib/notionHelpers";
 import { notFound } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Breadcumbs from "@/components/Breadcumbs";
@@ -17,8 +17,8 @@ export default async function BlogPost({
     return notFound();
   }
 
-  // サイドバー用のブログ記事一覧を取得（仮のデータ）
-  const blogList = { contents: [] }; // 必要に応じて実際のデータ取得に変更
+  // サイドバー用のブログ記事一覧を取得
+  const blogList = await getBlogList(5);
 
   return (
     <div>
@@ -38,7 +38,7 @@ export default async function BlogPost({
           />
           <ArticleDetail params={{ id }} />
         </div>
-        <Sidebar blogs={blogList.contents} />
+        <Sidebar blogs={blogList} />
       </div>
     </div>
   );

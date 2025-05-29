@@ -15,6 +15,19 @@ const notion = new Client({
 
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID!;
 
+// 画像URLを処理するヘルパー関数
+function processImageUrl(url: string): string {
+  // 既に絶対URLの場合はそのまま返す
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  // 相対パスの場合は、画像が見つからないことを示すプレースホルダーを返す
+  // または、適切なベースURLを追加する
+  console.warn(`相対パスの画像URL: ${url}`);
+  return url; // 一旦そのまま返す（必要に応じて修正）
+}
+
 // NotionのBlocksをMarkdownに変換
 function convertBlocksToMarkdown(blocks: NotionBlockResponse[]): string {
   let markdown = '';
@@ -84,10 +97,15 @@ function convertBlocksToMarkdown(blocks: NotionBlockResponse[]): string {
         
       case 'image':
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const imageUrl = (block.image as any)?.file?.url || (block.image as any)?.external?.url || '';
+        const rawImageUrl = (block.image as any)?.file?.url || (block.image as any)?.external?.url || '';
+        const imageUrl = processImageUrl(rawImageUrl);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const caption = (block.image as any)?.caption?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        markdown += `![${caption}](${imageUrl})\n\n`;
+        
+        // 画像URLが有効な場合のみMarkdownに追加
+        if (imageUrl && imageUrl.trim()) {
+          markdown += `![${caption}](${imageUrl})\n\n`;
+        }
         break;
         
       default:

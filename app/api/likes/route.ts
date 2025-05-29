@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('いいね情報取得エラー:', error);
     return NextResponse.json(
-      { error: 'いいね情報の取得に失敗しました' },
+      { error: 'いいね情報の取得に失敗しました', },
       { status: 500 }
     );
   }

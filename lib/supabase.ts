@@ -5,8 +5,10 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-// Supabaseクライアントの作成
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Supabaseクライアントの作成（環境変数が設定されていない場合はnull）
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 // いいねテーブルの型定義
 export type Like = {
@@ -20,6 +22,12 @@ export type Like = {
 export const LikesService = {
   // 投稿のいいね数とユーザーのいいね状態を取得
   async getLikeStatus(postId: string, userId: string) {
+    // Supabaseが設定されていない場合はデフォルト値を返す
+    if (!supabase) {
+      console.warn('Supabaseが設定されていません。いいね機能は無効です。');
+      return { count: 0, isLiked: false };
+    }
+
     // いいね数を取得
     const { count: likesCount, error: countError } = await supabase
       .from('likes')
@@ -52,6 +60,11 @@ export const LikesService = {
 
   // いいねを追加
   async addLike(postId: string, userId: string) {
+    // Supabaseが設定されていない場合はエラーを投げる
+    if (!supabase) {
+      throw new Error('Supabaseが設定されていません。いいね機能は無効です。');
+    }
+
     const { error } = await supabase
       .from('likes')
       .insert([{ post_id: postId, user_id: userId }]);
@@ -66,6 +79,11 @@ export const LikesService = {
 
   // いいねを削除
   async removeLike(postId: string, userId: string) {
+    // Supabaseが設定されていない場合はエラーを投げる
+    if (!supabase) {
+      throw new Error('Supabaseが設定されていません。いいね機能は無効です。');
+    }
+
     const { error } = await supabase
       .from('likes')
       .delete()

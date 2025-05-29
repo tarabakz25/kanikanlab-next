@@ -13,6 +13,7 @@ export default function Header() {
           width={30}
           height={30}
           className="dark:invert"
+          style={{ width: "auto", height: "auto" }}
         />
         <span className="">KanikanLab</span>
       </Link>
