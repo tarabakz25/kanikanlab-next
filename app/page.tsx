@@ -1,31 +1,16 @@
-'use client'
 import Sidebar from "@/components/Sidebar"
 import ArcticleContainer from "@/components/ArcticleContainer"
 import TopContainer from "../components/TopContainer"
 import Loading from "@/components/Loading"
+import { getBlogList } from "@/lib/notionHelpers"
 
-import { useState, useEffect } from "react"
-import { Blog } from "@/types"
+export default async function Home() {
+  const blogs = await getBlogList(10);
 
-export default function Home() {
-  const [blogs, setBlogs] = useState<Blog[]>([])
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const response = await fetch('/api/blogs?limit=10');
-        if (!response.ok) {
-          throw new Error('ブログ記事の取得に失敗しました');
-        }
-        const data = await response.json();
-        setBlogs(data);
-        console.log("取得したブログ -> ", data.map((blog: Blog) => blog.title));
-      } catch (error) {
-        console.error("ブログ記事の取得に失敗しました:", error);
-      }
-    }
-    fetchBlogs()
-  }, [])
+  if (process.env.NODE_ENV === 'development') {
+    console.log("ホームページ: 取得したブログ記事数 ->", blogs.length);
+    console.log("ホームページ: 記事タイトル ->", blogs.map(blog => blog.title));
+  }
 
   return (
     <Loading>

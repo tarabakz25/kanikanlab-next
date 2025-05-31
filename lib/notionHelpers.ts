@@ -10,10 +10,24 @@ import { isFullBlock } from "@notionhq/client";
 import "server-only";
 
 const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
+  auth: process.env.NOTION_SECRET_KEY,
 });
 
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID!;
+
+// 環境変数の確認
+if (!process.env.NOTION_SECRET_KEY) {
+  console.error("NOTION_SECRET_KEY が設定されていません");
+}
+if (!process.env.NOTION_DATABASE_ID) {
+  console.error("NOTION_DATABASE_ID が設定されていません");
+}
+
+if (process.env.NODE_ENV === 'development') {
+  console.log("Notion設定確認:");
+  console.log("- NOTION_SECRET_KEY:", process.env.NOTION_SECRET_KEY ? "設定済み" : "未設定");
+  console.log("- NOTION_DATABASE_ID:", process.env.NOTION_DATABASE_ID ? "設定済み" : "未設定");
+}
 
 // NotionのBlocksをMarkdownに変換
 function convertBlocksToMarkdown(blocks: NotionBlockResponse[]): string {
@@ -220,14 +234,14 @@ export async function getBlogPost(id: string): Promise<Blog | null> {
 // カテゴリーでフィルタリングしたブログ記事を取得（軽量版：本文なし）
 export async function getBlogsByCategory(category: string, limit: number = 100): Promise<Blog[]> {
   try {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`カテゴリー検索開始: "${category}"`);
+    }
+    
+    // まず全ての記事を取得してクライアントサイドでフィルタリング
+    // これによりNotionのフィルター条件の問題を回避
     const response = await notion.databases.query({
       database_id: NOTION_DATABASE_ID,
-      filter: {
-        property: "categories",
-        multi_select: {
-          contains: category,
-        },
-      },
       sorts: [
         {
           property: "publishedAt",
@@ -237,8 +251,36 @@ export async function getBlogsByCategory(category: string, limit: number = 100):
       page_size: limit,
     });
 
-    // 軽量版で変換（本文取得せず）
-    return response.results.map((page: unknown) => convertNotionPageToBlogLight(page as NotionPage));
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Notion APIレスポンス: ${response.results.length}件の記事を取得`);
+    }
+    
+    // 全記事を変換
+    const allBlogs = response.results.map((page: unknown) => convertNotionPageToBlogLight(page as NotionPage));
+    
+    // クライアントサイドでカテゴリーフィルタリング
+    const filteredBlogs = allBlogs.filter(blog => {
+      const hasCategory = blog.categories.some(cat => 
+        cat.toLowerCase() === category.toLowerCase() ||
+        cat === category ||
+        decodeURIComponent(cat) === category ||
+        encodeURIComponent(cat) === category
+      );
+      
+      if (hasCategory && process.env.NODE_ENV === 'development') {
+        console.log(`マッチした記事: "${blog.title}" - カテゴリー: [${blog.categories.join(', ')}]`);
+      }
+      
+      return hasCategory;
+    });
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`フィルター後の記事数: ${filteredBlogs.length}`);
+      console.log(`検索カテゴリー: "${category}"`);
+      console.log(`利用可能な全カテゴリー:`, [...new Set(allBlogs.flatMap(blog => blog.categories))]);
+    }
+    
+    return filteredBlogs;
   } catch (error) {
     console.error("Notion APIからのカテゴリー記事取得に失敗しました:", error);
     return [];

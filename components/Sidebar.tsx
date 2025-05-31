@@ -18,6 +18,10 @@ export default function Sidebar({ blogs }: Props) {
     )
   );
 
+  if (process.env.NODE_ENV === 'development') {
+    console.log("Sidebar: 利用可能なカテゴリー:", uniqueCategories);
+  }
+
   return (
     <div className="flex flex-col gap-10 ">
       <div className="flex w-72 flex-col items-center gap-2 rounded-2xl p-4 shadow-md dark:bg-gray-900">
@@ -55,19 +59,25 @@ export default function Sidebar({ blogs }: Props) {
           Category
         </h3>
         <ul className="flex h-full list-none flex-col gap-5 text-left">
-          {uniqueCategories.map((category, index) => (
-            <li key={`category-${index}`}>
-              <HoverTextHeader>
-                <Link
-                  href={`/blog/categories/${encodeURIComponent(category)}`}
-                  className="decoration-none relative block pl-3"
-                >
-                  <FaTag className="absolute top-1.5 left-[-0.5rem]" />
-                  {category}
-                </Link>
-              </HoverTextHeader>
-            </li>
-          ))}
+          {uniqueCategories.map((category, index) => {
+            const encodedCategory = encodeURIComponent(category);
+            if (process.env.NODE_ENV === 'development') {
+              console.log(`カテゴリーリンク生成: "${category}" -> "/blog/categories/${encodedCategory}"`);
+            }
+            return (
+              <li key={`category-${index}`}>
+                <HoverTextHeader>
+                  <Link
+                    href={`/blog/categories/${encodedCategory}`}
+                    className="decoration-none relative block pl-3"
+                  >
+                    <FaTag className="absolute top-1.5 left-[-0.5rem]" />
+                    {category}
+                  </Link>
+                </HoverTextHeader>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
