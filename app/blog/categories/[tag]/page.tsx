@@ -1,9 +1,10 @@
-import { getBlogsByCategory, getBlogList } from "@/lib/notionHelpers";
+import { getBlogsByCategory, getBlogList } from "@/lib/notionGetPosts";
 import Link from "next/link";
 import Image from "next/image";
 import Sidebar from "@/components/Sidebar";
 import ArcticleContainer from "@/components/ArcticleContainer";
 import Loading from "@/components/Loading";
+import { getAffiliateLinks } from "@/lib/notionGetAffiliateLinks";
 
 export default async function TagPage({
   params,
@@ -19,13 +20,16 @@ export default async function TagPage({
     console.log(`カテゴリーページ: デコードされたタグ = "${decodedTag}"`);
   }
   
-  const blogs = await getBlogsByCategory(tag);
+  const [blogs, allBlogs, affiliateProducts] = await Promise.all([
+    getBlogsByCategory(tag),
+    getBlogList(100),
+    getAffiliateLinks()
+  ]);
+  
   if (process.env.NODE_ENV === 'development') {
     console.log(`カテゴリーページ: 取得した記事数 = ${blogs.length}`);
+    console.log(`カテゴリーページ: 取得したアフィリエイト商品数 = ${affiliateProducts.length}`);
   }
-
-  // サイドバー用の全記事を取得
-  const allBlogs = await getBlogList(100);
 
   if (blogs.length === 0) {
     return (
@@ -40,7 +44,7 @@ export default async function TagPage({
                 デバッグ情報: 検索したカテゴリー = "{tag}"
               </p>
             </div>
-            <Sidebar blogs={allBlogs} />
+            <Sidebar blogs={allBlogs} affiliateProducts={affiliateProducts} />
           </div>
         </div>
     );
@@ -56,7 +60,7 @@ export default async function TagPage({
           <div className="flex-1">
             <ArcticleContainer blogs={blogs} />
           </div>
-          <Sidebar blogs={allBlogs} />
+          <Sidebar blogs={allBlogs} affiliateProducts={affiliateProducts} />
         </div>
       </div>
     </Loading>

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import { getBlogPost, getBlogList } from "@/lib/notionHelpers";
+import { getBlogPost, getBlogList } from "@/lib/notionGetPosts";
 import { Blog } from "@/types";
 
 // サーバーサイドでzenn-markdown-htmlを使用するためのユーティリティ関数

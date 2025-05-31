@@ -1,9 +1,10 @@
-import { getBlogPost } from "@/lib/notionHelpers";
+import { getBlogPost, getBlogList } from "@/lib/notionGetPosts";
 import { notFound } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Breadcumbs from "@/components/Breadcumbs";
 import ArticleDetail from "@/components/ArticleDetail";
 import LikeAndShare from "@/components/LikeAndShare";
+import { getAffiliateLinks } from "@/lib/notionGetAffiliateLinks";
 
 export default async function BlogPost({
   params,
@@ -11,14 +12,16 @@ export default async function BlogPost({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const blog = await getBlogPost(id);
+  
+  const [blog, blogList, affiliateProducts] = await Promise.all([
+    getBlogPost(id),
+    getBlogList(10),
+    getAffiliateLinks()
+  ]);
 
   if (!blog) {
     return notFound();
   }
-
-  // サイドバー用のブログ記事一覧を取得（仮のデータ）
-  const blogList = { contents: [] }; // 必要に応じて実際のデータ取得に変更
 
   return (
     <div>
@@ -38,7 +41,7 @@ export default async function BlogPost({
           />
           <ArticleDetail params={{ id }} />
         </div>
-        <Sidebar blogs={blogList.contents} />
+        <Sidebar blogs={blogList} affiliateProducts={affiliateProducts} />
       </div>
     </div>
   );

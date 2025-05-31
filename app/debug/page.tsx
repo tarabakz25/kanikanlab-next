@@ -1,4 +1,4 @@
-import { getBlogList } from "@/lib/notionHelpers";
+import { getBlogList } from "@/lib/notionGetPosts";
 
 export default async function DebugPage() {
   const blogs = await getBlogList(50);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getBlogList } from '@/lib/notionHelpers';
+import { getBlogList } from '@/lib/notionGetPosts';
 
 export async function GET(request: NextRequest) {
   try {

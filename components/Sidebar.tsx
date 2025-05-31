@@ -1,14 +1,16 @@
 import Image from "next/image";
 import { FaTwitter, FaGithub, FaTag } from "react-icons/fa";
 import Link from "next/link";
-import { Blog } from "@/types";
+import { Blog, AffiliateProduct } from "@/types";
 import { HoverTextHeader } from "./Animation";
+import AffiliateBox from "./AffiliateBox";
 
 type Props = {
   blogs: Blog[];
+  affiliateProducts?: AffiliateProduct[];
 };
 
-export default function Sidebar({ blogs }: Props) {
+export default function Sidebar({ blogs, affiliateProducts = [] }: Props) {
   // カテゴリーの重複を排除する
   const uniqueCategories = Array.from(
     new Set(
@@ -54,6 +56,10 @@ export default function Sidebar({ blogs }: Props) {
           </a>
         </div>
       </div>
+      
+      {/* アフィリエイト商品ボックス */}
+      <AffiliateBox products={affiliateProducts} />
+      
       <div className="flex flex-col items-center rounded-2xl p-2 pt-5 pb-5 shadow-lg dark:bg-gray-900">
         <h3 className="mt-5 mb-10 font-[krok] text-2xl tracking-wider">
           Category

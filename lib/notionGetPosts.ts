@@ -13,20 +13,20 @@ const notion = new Client({
   auth: process.env.NOTION_SECRET_KEY,
 });
 
-const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID!;
+const NOTION_POSTS_DATABASE_ID = process.env.NOTION_POSTS_DATABASE_ID!;
 
 // 環境変数の確認
 if (!process.env.NOTION_SECRET_KEY) {
   console.error("NOTION_SECRET_KEY が設定されていません");
 }
-if (!process.env.NOTION_DATABASE_ID) {
-  console.error("NOTION_DATABASE_ID が設定されていません");
+if (!process.env.NOTION_POSTS_DATABASE_ID) {
+  console.error("NOTION_POSTS_DATABASE_ID が設定されていません");
 }
 
 if (process.env.NODE_ENV === 'development') {
   console.log("Notion設定確認:");
   console.log("- NOTION_SECRET_KEY:", process.env.NOTION_SECRET_KEY ? "設定済み" : "未設定");
-  console.log("- NOTION_DATABASE_ID:", process.env.NOTION_DATABASE_ID ? "設定済み" : "未設定");
+  console.log("- NOTION_POSTS_DATABASE_ID:", process.env.NOTION_POSTS_DATABASE_ID ? "設定済み" : "未設定");
 }
 
 // NotionのBlocksをMarkdownに変換
@@ -199,7 +199,7 @@ export async function convertNotionPageToBlog(page: NotionPage): Promise<Blog> {
 export async function getBlogList(limit: number = 10): Promise<Blog[]> {
   try {
     const response = await notion.databases.query({
-      database_id: NOTION_DATABASE_ID,
+      database_id: NOTION_POSTS_DATABASE_ID,
       sorts: [
         {
           property: "publishedAt",
@@ -241,7 +241,7 @@ export async function getBlogsByCategory(category: string, limit: number = 100):
     // まず全ての記事を取得してクライアントサイドでフィルタリング
     // これによりNotionのフィルター条件の問題を回避
     const response = await notion.databases.query({
-      database_id: NOTION_DATABASE_ID,
+      database_id: NOTION_POSTS_DATABASE_ID,
       sorts: [
         {
           property: "publishedAt",

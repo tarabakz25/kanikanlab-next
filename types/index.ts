@@ -10,6 +10,16 @@ export interface Blog {
   categories: string[];
 }
 
+// アフィリエイト商品型
+export interface AffiliateProduct {
+  id: string;
+  title: string;
+  url: string;
+  description?: string;
+  image?: string;
+  price?: string;
+}
+
 // NotionのAPIレスポンス用の基本型をインポート
 import { 
   PageObjectResponse,

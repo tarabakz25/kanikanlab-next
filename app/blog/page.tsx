@@ -1,13 +1,18 @@
 import Sidebar from "@/components/Sidebar";
 import ArcticleContainer from "@/components/ArcticleContainer";
 import Loading from "@/components/Loading";
-import { getBlogList } from "@/lib/notionHelpers";
+import { getBlogList } from "@/lib/notionGetPosts";
+import { getAffiliateLinks } from "@/lib/notionGetAffiliateLinks";
 
 export default async function BlogsPage() {
-  const blogs = await getBlogList(20);
+  const [blogs, affiliateProducts] = await Promise.all([
+    getBlogList(20),
+    getAffiliateLinks()
+  ]);
 
   if (process.env.NODE_ENV === 'development') {
     console.log("ブログページ: 取得したブログ記事数 ->", blogs.length);
+    console.log("ブログページ: 取得したアフィリエイト商品数 ->", affiliateProducts.length);
   }
 
   return (
@@ -20,7 +25,7 @@ export default async function BlogsPage() {
           <div className="flex-1">
             <ArcticleContainer blogs={blogs} />
           </div>
-          <Sidebar blogs={blogs} />
+          <Sidebar blogs={blogs} affiliateProducts={affiliateProducts} />
         </div>
       </div>
     </Loading>

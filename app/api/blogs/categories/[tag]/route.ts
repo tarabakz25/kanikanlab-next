@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getBlogsByCategory } from '@/lib/notionHelpers';
+import { getBlogsByCategory } from '@/lib/notionGetPosts';
 
 export async function GET(
   request: NextRequest,

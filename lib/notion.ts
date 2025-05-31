@@ -5,9 +5,9 @@ const notion = new Client({
   auth: process.env.NEXT_PUBLIC_NOTION_API_KEY,
 });
 
-export async function getNotionData() {
+export async function getNotionPostsData() {
   return fetch(
-    'https://api.notion.com/v1/databases/' + process.env.NEXT_PUBLIC_NOTION_DATABASE_ID + '/query',
+    'https://api.notion.com/v1/databases/' + process.env.NOTION_POSTS_DATABASE_ID + '/query',
     {
       method: 'POST',
       headers: {
@@ -29,4 +29,18 @@ export async function getNotionDataByPageId(pageId: string) {
   return notion.blocks.children.list({
     block_id: pageId,
   })
+}
+
+export async function getNotionAffiliateData() {
+  return fetch(
+    'https://api.notion.com/v1/databases/' + process.env.NOTION_AFFILIATE_DATABASE_ID + '/query',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTION_API_KEY}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json',
+      },
+    }
+  ).then((res) => res.json());
 }
