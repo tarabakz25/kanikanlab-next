@@ -57,9 +57,6 @@ export default function Sidebar({ blogs, affiliateProducts = [] }: Props) {
         </div>
       </div>
       
-      {/* アフィリエイト商品ボックス */}
-      <AffiliateBox products={affiliateProducts} />
-      
       <div className="flex flex-col items-center rounded-2xl p-2 pt-5 pb-5 shadow-lg dark:bg-gray-900">
         <h3 className="mt-5 mb-10 font-[krok] text-2xl tracking-wider">
           Category
@@ -86,6 +83,9 @@ export default function Sidebar({ blogs, affiliateProducts = [] }: Props) {
           })}
         </ul>
       </div>
+      
+      {/* アフィリエイト商品ボックス */}
+      <AffiliateBox products={affiliateProducts} />
     </div>
   );
 }

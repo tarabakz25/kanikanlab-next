@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AffiliateProduct } from "@/types";
-import { FaExternalLinkAlt, FaShoppingCart } from "react-icons/fa";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 type Props = {
   products: AffiliateProduct[];
@@ -13,12 +13,11 @@ export default function AffiliateBox({ products }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl p-4 shadow-md dark:bg-gray-900">
-      <h3 className="flex items-center gap-2 font-[krok] text-xl tracking-wider">
-        <FaShoppingCart className="text-blue-600" />
-        おすすめ商品
+    <div className="flex flex-col items-center rounded-2xl p-2 pt-5 pb-5 shadow-lg dark:bg-gray-900">
+      <h3 className="mt-5 mb-10 font-[krok] text-2xl tracking-wider text-center">
+        My Gadgets
       </h3>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-5 w-full px-3">
         {products.slice(0, 3).map((product) => (
           <Link
             key={product.id}
