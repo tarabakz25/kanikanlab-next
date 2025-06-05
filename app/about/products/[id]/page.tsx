@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getProduct } from "@/lib/notionGetProducts";
+import { getProduct } from "@/lib/notion";
 
 export default async function ProductPage({ params }: { params: { id: string } }) {
   const product = await getProduct(params.id);
@@ -12,7 +12,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
         <Image src={product.heroImage.url} alt={product.name} width={100} height={100} />
         <h1>{product.name}</h1>
         <p>{product.description}</p>
-        
+      </div>
+      <div>
+        <div dangerouslySetInnerHTML={{ __html: product.body }} />
       </div>
     </div>
   );

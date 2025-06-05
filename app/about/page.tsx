@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { FaTwitter, FaGithub } from "react-icons/fa";
+import ProductsContainer from "@/components/ProductsContainer";
 
 const skills = {
   languages: ["c", "cpp", "js", "ts", "py", "html", "css"],
@@ -130,7 +131,7 @@ export default function About() {
       </div>
       <div className="flex flex-col items-center gap-10">
         <h1 className="font-[krok] text-5xl tracking-wider">Products</h1>
-        <p className="text-2xl">Coming Soon...</p>
+        <ProductsContainer />
       </div>
     </div>
   );

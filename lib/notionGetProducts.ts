@@ -1,6 +1,5 @@
 import { Client } from "@notionhq/client";
 import { convertBlocksToMarkdown } from "@/utils/notionMarkdownConverter";
-import "server-only";
 
 // Notion APIクライアントの初期化
 const notion = new Client({
