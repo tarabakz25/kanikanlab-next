@@ -1,12 +1,9 @@
 import { Client } from "@notionhq/client";
 import { 
   Blog, 
-  NotionPage, 
-  NotionBlock, 
-  NotionRichText, 
-  NotionBlockResponse
+  NotionPage
 } from "@/types";
-import { isFullBlock } from "@notionhq/client";
+import { convertBlocksToMarkdown } from "@/utils/notionMarkdownConverter";
 import "server-only";
 
 const notion = new Client({
@@ -27,97 +24,6 @@ if (process.env.NODE_ENV === 'development') {
   console.log("Notion設定確認:");
   console.log("- NOTION_SECRET_KEY:", process.env.NOTION_SECRET_KEY ? "設定済み" : "未設定");
   console.log("- NOTION_POSTS_DATABASE_ID:", process.env.NOTION_POSTS_DATABASE_ID ? "設定済み" : "未設定");
-}
-
-// NotionのBlocksをMarkdownに変換
-function convertBlocksToMarkdown(blocks: NotionBlockResponse[]): string {
-  let markdown = '';
-  
-  for (const blockResponse of blocks) {
-    // 型ガードを使用して完全なブロックかどうかを確認
-    if (!isFullBlock(blockResponse)) {
-      continue; // パーシャルブロックはスキップ
-    }
-    
-    const block = blockResponse as NotionBlock;
-    
-    switch (block.type) {
-      case 'paragraph':
-        const paragraphText = block.paragraph?.rich_text?.map((text: NotionRichText) => {
-          let content = text.plain_text || '';
-          if (text.annotations?.bold) content = `**${content}**`;
-          if (text.annotations?.italic) content = `*${content}*`;
-          if (text.annotations?.strikethrough) content = `~~${content}~~`;
-          if (text.annotations?.code) content = `\`${content}\``;
-          if (text.href) content = `[${content}](${text.href})`;
-          return content;
-        })
-        .join('') || '';
-        markdown += `${paragraphText}\n\n`;
-        break;
-        
-      case 'heading_1':
-        const h1Text = block.heading_1?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        markdown += `# ${h1Text}\n\n`;
-        break;
-        
-      case 'heading_2':
-        const h2Text = block.heading_2?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        markdown += `## ${h2Text}\n\n`;
-        break;
-        
-      case 'heading_3':
-        const h3Text = block.heading_3?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        markdown += `### ${h3Text}\n\n`;
-        break;
-        
-      case 'bulleted_list_item':
-        const bulletText = block.bulleted_list_item?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        markdown += `- ${bulletText}\n`;
-        break;
-        
-      case 'numbered_list_item':
-        const numberedText = block.numbered_list_item?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        markdown += `1. ${numberedText}\n`;
-        break;
-        
-      case 'code':
-        const codeText = block.code?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        const language = block.code?.language || '';
-        markdown += `\`\`\`${language}\n${codeText}\n\`\`\`\n\n`;
-        break;
-        
-      case 'quote':
-        const quoteText = block.quote?.rich_text?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        markdown += `> ${quoteText}\n\n`;
-        break;
-        
-      case 'divider':
-        markdown += `---\n\n`;
-        break;
-        
-      case 'image':
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const imageUrl = (block.image as any)?.file?.url || (block.image as any)?.external?.url || '';
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const caption = (block.image as any)?.caption?.map((text: NotionRichText) => text.plain_text).join('') || '';
-        markdown += `![${caption}](${imageUrl})\n\n`;
-        break;
-        
-      default:
-        // その他のブロックタイプはプレーンテキストとして扱う
-        const blockData = block[block.type as keyof NotionBlock] as { rich_text?: NotionRichText[] };
-        if (blockData?.rich_text) {
-          const text = blockData.rich_text.map((text: NotionRichText) => text.plain_text).join('');
-          if (text.trim()) {
-            markdown += `${text}\n\n`;
-          }
-        }
-        break;
-    }
-  }
-  
-  return markdown.trim();
 }
 
 // ページの中身（blocks）を取得してMarkdownに変換
@@ -226,22 +132,22 @@ export async function getBlogPost(id: string): Promise<Blog | null> {
 
     return await convertNotionPageToBlog(response as NotionPage);
   } catch (error) {
-    console.error("Notion APIからのブログ記事取得に失敗しました:", error);
+    console.error("ブログ記事の取得に失敗しました:", error);
     return null;
   }
 }
 
-// カテゴリーでフィルタリングしたブログ記事を取得（軽量版：本文なし）
+// カテゴリー別でブログ記事を取得
 export async function getBlogsByCategory(category: string, limit: number = 100): Promise<Blog[]> {
   try {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`カテゴリー検索開始: "${category}"`);
-    }
-    
-    // まず全ての記事を取得してクライアントサイドでフィルタリング
-    // これによりNotionのフィルター条件の問題を回避
     const response = await notion.databases.query({
       database_id: NOTION_POSTS_DATABASE_ID,
+      filter: {
+        property: "categories",
+        multi_select: {
+          contains: category,
+        },
+      },
       sorts: [
         {
           property: "publishedAt",
@@ -251,38 +157,61 @@ export async function getBlogsByCategory(category: string, limit: number = 100):
       page_size: limit,
     });
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Notion APIレスポンス: ${response.results.length}件の記事を取得`);
-    }
-    
-    // 全記事を変換
-    const allBlogs = response.results.map((page: unknown) => convertNotionPageToBlogLight(page as NotionPage));
-    
-    // クライアントサイドでカテゴリーフィルタリング
-    const filteredBlogs = allBlogs.filter(blog => {
-      const hasCategory = blog.categories.some(cat => 
-        cat.toLowerCase() === category.toLowerCase() ||
-        cat === category ||
-        decodeURIComponent(cat) === category ||
-        encodeURIComponent(cat) === category
-      );
-      
-      if (hasCategory && process.env.NODE_ENV === 'development') {
-        console.log(`マッチした記事: "${blog.title}" - カテゴリー: [${blog.categories.join(', ')}]`);
-      }
-      
-      return hasCategory;
-    });
-    
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`フィルター後の記事数: ${filteredBlogs.length}`);
-      console.log(`検索カテゴリー: "${category}"`);
-      console.log(`利用可能な全カテゴリー:`, [...new Set(allBlogs.flatMap(blog => blog.categories))]);
-    }
-    
-    return filteredBlogs;
+    // 軽量版で変換（本文取得せず）
+    return response.results.map((page: unknown) => convertNotionPageToBlogLight(page as NotionPage));
   } catch (error) {
-    console.error("Notion APIからのカテゴリー記事取得に失敗しました:", error);
+    console.error(`カテゴリー「${category}」のブログ記事取得に失敗しました:`, error);
     return [];
+  }
+}
+
+// 全てのカテゴリーを取得
+export async function getAllCategories(): Promise<string[]> {
+  try {
+    const response = await notion.databases.query({
+      database_id: NOTION_POSTS_DATABASE_ID,
+      page_size: 100,
+    });
+
+    const allCategories = new Set<string>();
+    
+    response.results.forEach((page: unknown) => {
+      const notionPage = page as NotionPage;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const categories = (notionPage.properties.categories as any)?.multi_select?.map((cat: any) => cat.name) || [];
+      categories.forEach((cat: string) => allCategories.add(cat));
+    });
+
+    return Array.from(allCategories).sort();
+  } catch (error) {
+    console.error("カテゴリー一覧の取得に失敗しました:", error);
+    return [];
+  }
+}
+
+// カテゴリー別の記事数を取得
+export async function getCategoryCounts(): Promise<{ [key: string]: number }> {
+  try {
+    const response = await notion.databases.query({
+      database_id: NOTION_POSTS_DATABASE_ID,
+      page_size: 100,
+    });
+
+    const categoryCounts: { [key: string]: number } = {};
+    
+    response.results.forEach((page: unknown) => {
+      const notionPage = page as NotionPage;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const categories = (notionPage.properties.categories as any)?.multi_select?.map((cat: any) => cat.name) || [];
+      
+      categories.forEach((cat: string) => {
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      });
+    });
+
+    return categoryCounts;
+  } catch (error) {
+    console.error("カテゴリー別記事数の取得に失敗しました:", error);
+    return {};
   }
 } 
